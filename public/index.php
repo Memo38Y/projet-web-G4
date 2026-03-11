@@ -15,6 +15,10 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // 4. LE ROUTEUR : On aiguille l'utilisateur selon l'URL
 switch ($uri) {
+    case '/postuler':
+        // Plus tard, on appellera un PostulerController ici
+        echo $twig->render('layout.html.twig', ['titre' => 'Postuler à une offre']);
+        break;
     case '/':
         // Plus tard, on appellera un HomeController ici
         echo $twig->render('layout.html.twig', ['titre' => 'Bienvenue sur Web4All']);
@@ -28,6 +32,6 @@ switch ($uri) {
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);
-        echo "Erreur 404 : Cette page n'existe pas, eiméo !";
+        echo "Erreur 404 : Cette page n'existe pas !";
         break;
 }
