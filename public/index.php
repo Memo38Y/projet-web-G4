@@ -4,6 +4,10 @@
 // 1. On charge tous les outils via Composer
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
+// Test temporaire de connexion
+$db = \App\Core\Database::getInstance();
+echo "Connexion réussie à la base de données !<br>";
+
 // 2. On prépare Twig pour qu'il sache où trouver les fichiers HTML
 $loader = new \Twig\Loader\FilesystemLoader(dirname(__DIR__) . '/views');
 $twig = new \Twig\Environment($loader, [
