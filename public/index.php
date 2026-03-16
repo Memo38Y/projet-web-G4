@@ -26,9 +26,8 @@ switch ($uri) {
         break;
 
     case '/entreprises':
-        // Page de test pour voir si le routeur marche
-        echo $twig->render('entreprise.html.twig', ['titre' => 'Entreprises', 
-            'entreprises' => 'Google, Facebook, Amazon, Microsoft, Apple']);
+        $entrepriseController = new \App\Controllers\EntrepriseController($twig);
+        $entrepriseController->index();
         break;
 
     default:
