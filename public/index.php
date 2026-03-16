@@ -4,10 +4,6 @@
 // 1. On charge tous les outils via Composer
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-// Test temporaire de connexion
-$db = \App\Core\Database::getInstance();
-echo "Connexion réussie à la base de données !<br>";
-
 // 2. On prépare Twig pour qu'il sache où trouver les fichiers HTML
 $loader = new \Twig\Loader\FilesystemLoader(dirname(__DIR__) . '/views');
 $twig = new \Twig\Environment($loader, [
@@ -24,13 +20,15 @@ switch ($uri) {
         echo $twig->render('layout.html.twig', ['titre' => 'Postuler à une offre']);
         break;
     case '/':
-        // Plus tard, on appellera un HomeController ici
-        echo $twig->render('layout.html.twig', ['titre' => 'Bienvenue sur Web4All']);
+        // On instancie le contrôleur de l'accueil et on lance la méthode index()
+        $homeController = new \App\Controllers\HomeController($twig);
+        $homeController->index();
         break;
 
     case '/entreprises':
         // Page de test pour voir si le routeur marche
-        echo $twig->render('layout.html.twig', ['titre' => 'Liste des Entreprises']);
+        echo $twig->render('entreprise.html.twig', ['titre' => 'Entreprises', 
+            'entreprises' => 'Google, Facebook, Amazon, Microsoft, Apple']);
         break;
 
     default:

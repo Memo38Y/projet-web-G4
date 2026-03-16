@@ -1,0 +1,41 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Accueil - Web4All{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <h1>Trouve le job qui te correspond</h1>
+        <p>Des milliers d'offres de stage disponibles</p>
+        <div class="search-box">
+            <input type="text" id="job" placeholder="Métier">
+            <input type="text" id="city" placeholder="Ville">
+            <button>Rechercher</button>
+        </div>
+    </section>
+
+    <section class="categories">
+        <h2>Catégories populaires</h2>
+        <div class="grid">
+            <div class="category">💻 Informatique</div>
+            <div class="category">📈 Marketing</div>
+            <div class="category">🏥 Santé</div>
+        </div>
+    </section>
+
+    <section class="jobs">
+        <h2>Dernières offres</h2>
+        
+        {% for offre in dernieresOffres %}
+            <div class="job-card">
+                <h3>{{ offre.titre }}</h3>
+                <div class="job-details">
+                    <span class="badge location">{{ offre.lieu }}</span>
+                    <span class="badge contract">Stage</span>
+                </div>
+                <button>Voir l'offre</button>
+            </div>
+        {% else %}
+            <p style="text-align:center;">Aucune offre disponible pour le moment.</p>
+        {% endfor %}
+    </section>
+{% endblock %}
