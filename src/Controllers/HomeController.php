@@ -1,5 +1,9 @@
 <?php
+
 namespace App\Controllers;
+
+// On importe notre nouveau Modèle !
+use App\Models\Offre;
 
 class HomeController
 {
@@ -12,14 +16,12 @@ class HomeController
 
     public function index()
     {
-        $offresTest = [
-            ['titre' => 'Développeur Web Laravel', 'lieu' => 'Paris'],
-            ['titre' => 'Designer UX/UI', 'lieu' => 'Lyon'],
-            ['titre' => 'Assistant Chef de Projet', 'lieu' => 'Bordeaux']
-        ];
-        
+        // On va chercher les vraies données dans la BDD
+        $vraiesOffres = Offre::getLastThree();
+
+        // On envoie ces données à la vue Twig
         echo $this->twig->render('accueil.html.twig', [
-            'dernieresOffres' => $offresTest
+            'dernieresOffres' => $vraiesOffres
         ]);
     }
 }
