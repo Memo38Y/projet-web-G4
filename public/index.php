@@ -49,6 +49,11 @@ switch ($uri) {
         $favoriController->toggleApi();
         break;
 
+    case '/entreprise_offres':
+        $entrepriseController = new \App\Controllers\EntrepriseController($twig);
+        $entrepriseController->showOffres();
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);

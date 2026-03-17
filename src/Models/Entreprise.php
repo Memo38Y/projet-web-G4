@@ -19,4 +19,13 @@ class Entreprise
         
         return $requete->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    // Récupère les infos d'une seule entreprise
+    public static function getById($id)
+    {
+        $db = Database::getInstance();
+        $req = $db->prepare("SELECT * FROM ENTREPRISE WHERE Id_ENTREPRISE = ?");
+        $req->execute([$id]);
+        return $req->fetch(PDO::FETCH_ASSOC);
+    }
 }

@@ -27,7 +27,9 @@
                     <span class="badge contract">{{ entreprise.email_contact }}</span>
                 </div>
                 
-                <button style="margin-top: 15px;">Voir les offres de cette entreprise</button>
+                <a href="/entreprise_offres?id={{ entreprise.Id_ENTREPRISE }}">
+                    <button style="margin-top: 15px;">Voir les offres de cette entreprise</button>
+                </a>
 
                 {% if session.user.role in [2, 4] %}
                     <button style="margin-top: 15px; background: #ff6b35;">Notez cette entreprise</button>

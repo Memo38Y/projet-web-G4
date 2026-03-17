@@ -1,0 +1,41 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Offres de {{ entreprise.nom }} - Web4All{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <h1>Les offres de <strong style="color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">{{ entreprise.nom }}</strong></h1>
+        <p>{{ entreprise.description }}</p>
+        
+        <div class="search-box">
+            <input type="text" id="offre-search" placeholder="Rechercher une offre chez {{ entreprise.nom }}...">
+            <button>Rechercher</button>
+        </div>
+    </section>
+
+    <section class="jobs">
+        <h2>Postes actuellement ouverts</h2>
+        
+        {% if offres is not empty %}
+            {% for offre in offres %}
+                <div class="job-card">
+                    <h3>{{ offre.titre }}</h3>
+                    <p>{{ offre.description }}</p>
+                    
+                    <div class="job-details">
+                        <span class="badge location">{{ offre.lieu }}</span>
+                        <span class="badge contract">{{ offre.base_remuneration }} € / mois</span>
+                    </div>
+                    
+                    <a href="/?uri=offre&id={{ offre.Id_OFFRE }}">
+                        <button style="margin-top: 15px;">Voir les détails du stage</button>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div style="background: #f5f7fb; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px;">
+                <p style="color: #555; font-size: 1.1em;"><em>{{ entreprise.nom }} n'a pas encore publié d'offres de stage.</em></p>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}
