@@ -9,7 +9,9 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 $loader = new \Twig\Loader\FilesystemLoader(dirname(__DIR__) . '/views');
 $twig = new \Twig\Environment($loader, [
     'cache' => false, // On désactive le cache pendant qu'on code
+    'debug' => true,   // On active le mode debug pour Twig
 ]);
+$twig->addGlobal('session', $_SESSION);
 
 // 3. On récupère l'URL demandée (sans les paramètres ?id=...)
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -30,6 +32,16 @@ switch ($uri) {
     case '/connexion':
         $authController = new \App\Controllers\AuthController($twig);
         $authController->login();
+        break;
+    
+    case '/profil':
+        $profilController = new \App\Controllers\ProfilController($twig);
+        $profilController->index();
+        break;
+        
+    case '/deconnexion':
+        $authController = new \App\Controllers\AuthController($twig);
+        $authController->logout();
         break;
 
     default:

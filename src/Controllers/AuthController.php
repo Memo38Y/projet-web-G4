@@ -13,6 +13,13 @@ class AuthController
         $this->twig = $twig;
     }
 
+    public function logout()
+    {
+        session_destroy();
+        header('Location: /');
+        exit;
+    }
+    
     public function login()
     {
         $erreur = null;

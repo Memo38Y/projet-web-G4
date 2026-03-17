@@ -1,0 +1,27 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Mon Profil - Web4All{% endblock %}
+
+{% block content %}
+    <section class="hero" style="padding: 40px 20px;">
+        <h1>Bienvenue, {{ session.user.prenom }} !</h1>
+        <p>Gère tes informations et tes candidatures de stage</p>
+    </section>
+
+    <section class="categories" style="display: flex; justify-content: center; padding: 40px 10%;">
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left;">
+            
+            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">Mes Informations</h3>
+            <p><strong>Nom :</strong> {{ session.user.nom }}</p>
+            <p><strong>Prénom :</strong> {{ session.user.prenom }}</p>
+            <p><strong>Statut :</strong> {% if session.user.role == 1 %}Étudiant{% else %}Autre{% endif %}</p>
+            
+            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 30px;">Mes Candidatures en cours</h3>
+            
+            <div style="background: #f5f7fb; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <p style="margin: 0; color: #555;"><em>Tu n'as pas encore postulé à une offre. Découvre vite nos entreprises partenaires !</em></p>
+            </div>
+            
+        </div>
+    </section>
+{% endblock %}

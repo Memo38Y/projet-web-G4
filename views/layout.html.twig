@@ -13,7 +13,12 @@
         <ul>
             <li><a href="/">Accueil</a></li>
             <li><a href="/entreprises">Entreprises</a></li>
-            <li><a href="/connexion">Connexion</a></li>
+            {% if session.user %}
+                <li><a href="/profil" style="color: #2a6df4; font-weight: bold;">Mon Profil ({{ session.user.prenom }})</a></li>
+                <li><a href="/deconnexion">Déconnexion</a></li>
+            {% else %}
+                <li><a href="/connexion">Connexion</a></li>
+            {% endif %}
         </ul>
     </nav>
 
