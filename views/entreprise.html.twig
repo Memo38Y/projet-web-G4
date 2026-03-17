@@ -28,6 +28,11 @@
                 </div>
                 
                 <button style="margin-top: 15px;">Voir les offres de cette entreprise</button>
+
+                {% if session.user.role in [2, 4] %}
+                    <button style="margin-top: 15px; background: #ff6b35;">Notez cette entreprise</button>
+                {% endif %}
+                
             </div>
         {% else %}
             <p style="text-align:center;">Aucune entreprise disponible pour le moment.</p>
