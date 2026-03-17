@@ -1,6 +1,7 @@
 <?php
-
 namespace App\Controllers;
+
+use App\Models\Favori; // <-- N'oublie pas l'import !
 
 class ProfilController
 {
@@ -13,13 +14,20 @@ class ProfilController
 
     public function index()
     {
-        // LE VIGILE : Si le visiteur n'a pas de session, on le vire vers la connexion
         if (!isset($_SESSION['user'])) {
             header('Location: /connexion');
             exit;
         }
 
-        // S'il est connecté, on affiche sa belle page
-        echo $this->twig->render('profil.html.twig');
+        // Si c'est un étudiant (rôle 1), on va chercher ses favoris
+        $mesFavoris = [];
+        if ($_SESSION['user']['role'] == 1) {
+            $mesFavoris = Favori::getUserFavorites($_SESSION['user']['id']);
+        }
+
+        // On envoie la variable à Twig
+        echo $this->twig->render('profil.html.twig', [
+            'favoris' => $mesFavoris
+        ]);
     }
 }

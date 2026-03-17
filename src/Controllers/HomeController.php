@@ -16,12 +16,23 @@ class HomeController
 
     public function index()
     {
-        // On va chercher les vraies données dans la BDD
-        $vraiesOffres = Offre::getLastThree();
+        $vraiesOffres = \App\Models\Offre::getLastThree();
 
-        // On envoie ces données à la vue Twig
+        $mesFavorisIds = [];
+
+        // Si c'est un étudiant connecté, on utilise ta fonction existante !
+        if (isset($_SESSION['user']) && $_SESSION['user']['role'] == 1) {
+            
+            // 1. On récupère toutes les données des offres favorites
+            $offresFavorites = \App\Models\Favori::getUserFavorites($_SESSION['user']['id']);
+            
+            // 2. On extrait UNIQUEMENT la colonne 'Id_OFFRE' pour en faire une liste simple
+            $mesFavorisIds = array_column($offresFavorites, 'Id_OFFRE');
+        }
+
         echo $this->twig->render('accueil.html.twig', [
-            'dernieresOffres' => $vraiesOffres
+            'dernieresOffres' => $vraiesOffres,
+            'mesFavorisIds' => $mesFavorisIds
         ]);
     }
 }

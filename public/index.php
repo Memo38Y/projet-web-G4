@@ -44,6 +44,11 @@ switch ($uri) {
         $authController->logout();
         break;
 
+    case '/api/favori/toggle':
+        $favoriController = new \App\Controllers\FavoriController();
+        $favoriController->toggleApi();
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);

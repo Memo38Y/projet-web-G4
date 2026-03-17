@@ -5,7 +5,7 @@
 {% block content %}
     <section class="hero" style="padding: 40px 20px;">
         <h1>Bienvenue, {{ session.user.prenom }} !</h1>
-        <p>Gère tes informations et tes candidatures de stage</p>
+        <p>Gère tes informations, tes candidatures et tes favoris</p>
     </section>
 
     <section class="categories" style="display: flex; justify-content: center; padding: 40px 10%;">
@@ -33,6 +33,30 @@
             <div style="background: #f5f7fb; padding: 15px; border-radius: 8px; margin-top: 15px;">
                 <p style="margin: 0; color: #555;"><em>Tu n'as pas encore postulé à une offre. Découvre vite nos entreprises partenaires !</em></p>
             </div>
+
+            {% if session.user.role == 1 %}
+                <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 30px;">Mes Offres Favorites</h3>
+                
+                {% if favoris is not empty %}
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        {% for offre in favoris %}
+                            <div style="background: #ffffff; border: 1px solid #dfe3ea; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h4 style="margin: 0 0 5px 0; color: #1e2a3a;">{{ offre.titre }}</h4>
+                                    <span class="badge location">{{ offre.lieu }}</span>
+                                </div>
+                                <a href="/?uri=offre&id={{ offre.Id_OFFRE }}">
+                                    <button style="padding: 8px 15px; font-size: 0.9em;">Revoir l'offre</button>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div style="background: #f5f7fb; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <p style="margin: 0; color: #555;"><em>Tu n'as pas encore d'offres en favoris. Clique sur le petit drapeau d'une offre pour la sauvegarder ici !</em></p>
+                    </div>
+                {% endif %}
+            {% endif %}
             
         </div>
     </section>
