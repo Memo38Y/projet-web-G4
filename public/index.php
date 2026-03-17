@@ -15,10 +15,6 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // 4. LE ROUTEUR : On aiguille l'utilisateur selon l'URL
 switch ($uri) {
-    case '/postuler':
-        // Plus tard, on appellera un PostulerController ici
-        echo $twig->render('layout.html.twig', ['titre' => 'Postuler à une offre']);
-        break;
     case '/':
         // On instancie le contrôleur de l'accueil et on lance la méthode index()
         $homeController = new \App\Controllers\HomeController($twig);
