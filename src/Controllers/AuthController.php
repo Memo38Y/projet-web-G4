@@ -41,7 +41,7 @@ class AuthController
                     'id' => $user['Id_Utilisateur'],
                     'nom' => $user['nom'],
                     'prenom' => $user['prenom'],
-                    'role' => $user['Id_Rôle']
+                    'role' => $user['Id_Role']
                 ];
                 
                 // 4. On le redirige vers l'accueil
