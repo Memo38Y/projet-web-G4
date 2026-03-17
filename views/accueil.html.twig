@@ -51,41 +51,4 @@
             <p style="text-align:center;">Aucune offre disponible pour le moment.</p>
         {% endfor %}
     </section>
-
-    <div id="toast" style="visibility: hidden; min-width: 250px; background-color: #2a6df4; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 1; left: 50%; bottom: 30px; transform: translateX(-50%); box-shadow: 0px 4px 10px rgba(0,0,0,0.2); transition: 0.5s;">
-        Offre ajoutée aux favoris !
-    </div>
-
-    <script>
-    function toggleFavori(element) {
-        const offreId = element.getAttribute('data-id');
-        
-        // On envoie la requête silencieuse au contrôleur PHP
-        fetch('/api/favori/toggle', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'id_offre=' + offreId
-        })
-        .then(response => response.json())
-        .then(data => {
-            const toast = document.getElementById("toast");
-            
-            if(data.status === 'added') {
-                element.style.color = '#2a6df4'; // Devient bleu !
-                toast.innerText = "⭐ Offre ajoutée à vos favoris !";
-            } else if(data.status === 'removed') {
-                element.style.color = '#ccc'; // Redevient gris
-                toast.innerText = "❌ Offre retirée des favoris.";
-            }
-            
-            // On affiche le pop-up pendant 3 secondes
-            toast.style.visibility = "visible";
-            toast.style.bottom = "50px";
-            setTimeout(() => { 
-                toast.style.visibility = "hidden"; 
-                toast.style.bottom = "30px";
-            }, 3000);
-        });
-    }
-    </script>
 {% endblock %}

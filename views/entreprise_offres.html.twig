@@ -20,6 +20,18 @@
             {% for offre in offres %}
                 <div class="job-card">
                     <h3>{{ offre.titre }}</h3>
+                    {% if session.user.role == 1 %}
+                    
+                        {% if offre.Id_OFFRE in mesFavorisIds %}
+                            {% set couleur_drapeau = '#2a6df4' %} {% else %}
+                            {% set couleur_drapeau = '#ccc' %}     {% endif %}
+
+                        <span class="favori-flag" data-id="{{ offre.Id_OFFRE }}" onclick="toggleFavori(this)" 
+                            style="cursor: pointer; color: {{ couleur_drapeau }}; font-size: 24px; float: right; transition: 0.3s;">
+                            ⚑
+                        </span>
+                    
+                    {% endif %}
                     <p>{{ offre.description }}</p>
                     
                     <div class="job-details">
