@@ -1,0 +1,34 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Connexion - Web4All{% endblock %}
+
+{% block content %}
+    <section class="hero" style="padding: 40px 20px;">
+        <h1>Espace Connexion</h1>
+        <p>Accède à ton profil et à tes candidatures</p>
+    </section>
+
+    <section class="categories" style="display: flex; justify-content: center; padding: 40px 10%;">
+        <div class="job-card" style="width: 100%; max-width: 400px; text-align: left;">
+            
+            <form action="/connexion" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                
+                <div>
+                    <label for="email" style="font-weight: 600; color: #1e2a3a;">Adresse Email</label>
+                    <input type="email" id="email" name="email" placeholder="jean@etudiant.cesi.fr" required 
+                           style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #dfe3ea; border-radius: 6px; box-sizing: border-box;">
+                </div>
+                
+                <div>
+                    <label for="password" style="font-weight: 600; color: #1e2a3a;">Mot de passe</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required 
+                           style="width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #dfe3ea; border-radius: 6px; box-sizing: border-box;">
+                </div>
+                
+                <button type="submit" style="width: 100%; margin-top: 10px;">Se connecter</button>
+                
+            </form>
+            
+        </div>
+    </section>
+{% endblock %}

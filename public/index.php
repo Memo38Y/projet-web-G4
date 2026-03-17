@@ -26,6 +26,11 @@ switch ($uri) {
         $entrepriseController->index();
         break;
 
+    case '/connexion':
+        $authController = new \App\Controllers\AuthController($twig);
+        $authController->login();
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);
