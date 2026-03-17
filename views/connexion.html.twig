@@ -10,7 +10,11 @@
 
     <section class="categories" style="display: flex; justify-content: center; padding: 40px 10%;">
         <div class="job-card" style="width: 100%; max-width: 400px; text-align: left;">
-            
+            {% if erreur %}
+                <div style="background-color: #ffcccc; color: #cc0000; padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center; font-weight: 500;">
+                    {{ erreur }}
+                </div>
+            {% endif %}
             <form action="/connexion" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
                 
                 <div>
@@ -28,6 +32,7 @@
                 <button type="submit" style="width: 100%; margin-top: 10px;">Se connecter</button>
                 
             </form>
+            
             
         </div>
     </section>

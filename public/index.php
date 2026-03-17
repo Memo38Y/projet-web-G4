@@ -1,5 +1,6 @@
 <?php
 // public/index.php
+session_start();
 
 // 1. On charge tous les outils via Composer
 require_once dirname(__DIR__) . '/vendor/autoload.php';
