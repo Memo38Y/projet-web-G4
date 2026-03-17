@@ -45,7 +45,7 @@ class AuthController
                 ];
                 
                 // 4. On le redirige vers l'accueil
-                header('Location: /');
+                header('Location: /profil');
                 exit;
             } else {
                 // ÉCHEC : On prépare un message d'erreur
