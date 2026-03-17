@@ -30,7 +30,8 @@
                 <h3>{{ offre.titre }}</h3>
                 <div class="job-details">
                     <span class="badge location">{{ offre.lieu }}</span>
-                    <span class="badge contract">Stage</span>
+                    <span class="badge contract">{{ offre.type_contrat }}</span>
+                    <span class="badge salary">{{ offre.base_remuneration }} €</span>
                 </div>
                 <button>Voir l'offre</button>
             </div>
