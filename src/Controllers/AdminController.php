@@ -15,8 +15,8 @@ class AdminController
 
     public function gererEtudiants()
     {
-        // LE VIGILE : Si ce n'est pas un Admin (rôle 4), on le jette !
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 4) {
+        // LE VIGILE : Si ce n'est pas un Admin (rôle 3), on le jette !
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 3) {
             header('Location: /');
             exit;
         }
