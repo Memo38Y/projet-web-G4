@@ -1,0 +1,62 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Gérer les Étudiants - Admin{% endblock %}
+
+{% block content %}
+    <section class="hero" style="padding: 40px 20px;">
+        <h1>Gestion des Étudiants</h1>
+        <p>Espace réservé à l'administration</p>
+    </section>
+
+    <section class="categories" style="display: flex; justify-content: center; padding: 40px 10%;">
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left;">
+            
+            <a href="/profil" style="color: #ff6b35; text-decoration: none; font-weight: bold;">← Retour au profil</a>
+            
+            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 20px;">Ajouter un nouvel étudiant</h3>
+            
+            {% if message %}
+                <div style="background-color: #eef2f9; padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: center; font-weight: 600; color: #1e2a3a;">
+                    {{ message }}
+                </div>
+            {% endif %}
+
+            <form action="/admin/etudiants" method="POST" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label for="nom" style="font-weight: 600;">Nom *</label>
+                        <input type="text" id="nom" name="nom" required style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="prenom" style="font-weight: 600;">Prénom *</label>
+                        <input type="text" id="prenom" name="prenom" required style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="email" style="font-weight: 600;">Adresse Email *</label>
+                    <input type="email" id="email" name="email" required style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+                
+                <div>
+                    <label for="password" style="font-weight: 600;">Mot de passe provisoire *</label>
+                    <input type="password" id="password" name="password" required style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+
+                <div>
+                    <label for="id_pilote" style="font-weight: 600;">Assigner à un Pilote</label>
+                    <select id="id_pilote" name="id_pilote" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; background: white;">
+                        <option value="">-- Aucun pilote assigné --</option>
+                        {% for pilote in pilotes %}
+                            <option value="{{ pilote.Id_Utilisateur }}">{{ pilote.prenom }} {{ pilote.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <button type="submit" style="margin-top: 15px;">Créer l'étudiant</button>
+            </form>
+            
+        </div>
+    </section>
+{% endblock %}

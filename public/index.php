@@ -59,6 +59,11 @@ switch ($uri) {
         $offreController->show();
         break;
 
+    case '/admin/etudiants':
+        $adminController = new \App\Controllers\AdminController($twig);
+        $adminController->gererEtudiants();
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);
