@@ -1,0 +1,62 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ offre.titre }} - Web4All{% endblock %}
+
+{% block content %}
+    <section class="hero" style="padding: 40px 20px; text-align: left; display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto;">
+        <div>
+            <h1 style="margin-bottom: 5px;">{{ offre.titre }}</h1>
+            <p style="font-size: 1.2em; opacity: 0.9;">Proposé par <strong>{{ offre.nom_entreprise }}</strong></p>
+        </div>
+        
+        {% if session.user.role == 1 %}
+            {% set couleur_drapeau = estFavori ? '#2a6df4' : '#ccc' %}
+            <span class="favori-flag" data-id="{{ offre.Id_OFFRE }}" onclick="toggleFavori(this)" 
+                  style="cursor: pointer; color: {{ couleur_drapeau }}; font-size: 36px; transition: 0.3s; background: white; padding: 10px 15px; border-radius: 50%; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                ⚑
+            </span>
+        {% endif %}
+    </section>
+
+    <section class="categories" style="display: flex; justify-content: center; padding: 40px 20px;">
+        <div class="job-card" style="width: 100%; max-width: 800px; text-align: left;">
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;">
+                <span class="badge location">📍 {{ offre.lieu }}</span>
+                <span class="badge contract">💶 {{ offre.base_remuneration }} € / mois</span>
+                {% if offre.duree %}
+                    <span class="badge" style="background: #eef2f9; color: #1e2a3a; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600;">⏱️ {{ offre.duree }}</span>
+                {% endif %}
+                <span class="badge" style="background: #eef2f9; color: #1e2a3a; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600;">👥 {{ offre.places_disponibles }} place(s)</span>
+            </div>
+
+            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">Description du stage</h3>
+            <p style="line-height: 1.6; color: #444; margin-bottom: 30px;">{{ offre.description }}</p>
+
+            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">Compétences requises</h3>
+            {% if competences is not empty %}
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; margin-top: 15px;">
+                    {% for comp in competences %}
+                        <span style="background: #1e2a3a; color: white; padding: 6px 15px; border-radius: 6px; font-size: 0.9em;">{{ comp }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Aucune compétence spécifique n'a été renseignée pour cette offre.</p>
+            {% endif %}
+
+            <div style="text-align: center; margin-top: 40px; border-top: 1px solid #eef2f9; padding-top: 25px;">
+                {% if session.user %}
+                    {% if session.user.role == 1 %}
+                        <button style="font-size: 1.1em; padding: 12px 30px;">Postuler à cette offre</button>
+                    {% else %}
+                        <p style="color: #888;"><em>Connecté en tant que {{ session.user.role == 2 ? 'Pilote' : (session.user.role == 4 ? 'Administrateur' : 'Délégué') }}. Seuls les étudiants peuvent postuler.</em></p>
+                    {% endif %}
+                {% else %}
+                    <p style="margin-bottom: 15px;">Connectez-vous pour postuler à cette offre.</p>
+                    <a href="/connexion"><button style="background: #1e2a3a;">Se connecter</button></a>
+                {% endif %}
+            </div>
+
+        </div>
+    </section>
+{% endblock %}

@@ -54,6 +54,11 @@ switch ($uri) {
         $entrepriseController->showOffres();
         break;
 
+    case '/offre':
+        $offreController = new \App\Controllers\OffreController($twig);
+        $offreController->show();
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);

@@ -45,7 +45,9 @@
                     <span class="badge contract">{{ offre.type_contrat }}</span>
                     <span class="badge salary">{{ offre.base_remuneration }} €</span>
                 </div>
-                <button>Voir l'offre</button>
+                <a href="/offre?id={{ offre.Id_OFFRE }}">
+                    <button>Voir l'offre</button>
+                </a>
             </div>
         {% else %}
             <p style="text-align:center;">Aucune offre disponible pour le moment.</p>
