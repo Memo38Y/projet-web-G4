@@ -97,4 +97,81 @@ class AdminController
             'message' => $message
         ]);
     }
+
+    public function gererPilotes()
+    {
+        // VIGILE Admin
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 3) {
+            header('Location: /');
+            exit;
+        }
+
+        $message = null;
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+            // 1. Action : CRÉATION
+            if (isset($_POST['action_create'])) {
+                $nom = $_POST['nom'] ?? '';
+                $prenom = $_POST['prenom'] ?? '';
+                $email = $_POST['email'] ?? '';
+                $mdp = $_POST['password'] ?? '';
+
+                if ($nom && $prenom && $email && $mdp) {
+                    if (preg_match('/\d/', $nom) || preg_match('/\d/', $prenom)) {
+                        $message = "❌ Erreur : Le nom et le prénom ne doivent pas contenir de chiffres.";
+                    } elseif (strlen($nom) > 50 || strlen($prenom) > 50 || strlen($mdp) > 50) {
+                        $message = "❌ Erreur : Limite de 50 caractères dépassée.";
+                    } else {
+                        Utilisateur::createPilote($nom, $prenom, $email, $mdp);
+                        $message = "✅ Pilote $prenom $nom créé !";
+                    }
+                }
+            }
+            
+            // 2. Action : MODIFICATION
+            elseif (isset($_POST['action_update'])) {
+                $id = $_POST['id_utilisateur_edit'] ?? null;
+                $nom = $_POST['nom_edit'] ?? '';
+                $prenom = $_POST['prenom_edit'] ?? '';
+                $email = $_POST['email_edit'] ?? '';
+                $mdp = $_POST['password_edit'] ?? null;
+
+                if ($id && $nom && $prenom && $email) {
+                    if (preg_match('/\d/', $nom) || preg_match('/\d/', $prenom)) {
+                        $message = "❌ Erreur : Le nom et le prénom ne doivent pas contenir de chiffres.";
+                    } elseif (strlen($nom) > 50 || strlen($prenom) > 50 || (!empty($mdp) && strlen($mdp) > 50)) {
+                        $message = "❌ Erreur : Limite de 50 caractères dépassée.";
+                    } else {
+                        Utilisateur::updatePilote($id, $nom, $prenom, $email, $mdp);
+                        $message = "✅ Informations du pilote mises à jour !";
+                    }
+                }
+            }
+            
+            // 3. Action : SUPPRESSION
+            elseif (isset($_POST['action_delete'])) {
+                $id = $_POST['id_utilisateur_edit'] ?? null;
+                $nom = $_POST['nom_edit'] ?? '';
+                $prenom = $_POST['prenom_edit'] ?? '';
+
+                if ($id) {
+                    try {
+                        Utilisateur::deletePilote($id);
+                        $message = "🗑️ Le pilote $prenom $nom a été supprimé. Ses anciens étudiants n'ont plus de pilote assigné.";
+                    } catch (\PDOException $e) {
+                        $message = "❌ Impossible de supprimer ce pilote.";
+                    }
+                }
+            }
+        }
+
+        // On a déjà cette méthode dans notre modèle, parfait pour la liste !
+        $pilotes = Utilisateur::getPilotes();
+
+        echo $this->twig->render('admin_pilotes.html.twig', [
+            'pilotes' => $pilotes,
+            'message' => $message
+        ]);
+    }
 }
