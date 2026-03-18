@@ -8,55 +8,142 @@
         <p>Espace réservé à l'administration</p>
     </section>
 
-    <section class="categories" style="display: flex; justify-content: center; padding: 40px 10%;">
-        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left;">
-            
-            <a href="/profil" style="color: #ff6b35; text-decoration: none; font-weight: bold;">← Retour au profil</a>
-            
-            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 20px;">Ajouter un nouvel étudiant</h3>
-            
-            {% if message %}
-                <div style="background-color: #eef2f9; padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: center; font-weight: 600; color: #1e2a3a;">
+    <section class="categories" style="display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 40px 10%;">
+        
+        <div style="width: 100%; max-width: 600px; text-align: left;">
+             <a href="/profil" style="color: #ff6b35; text-decoration: none; font-weight: bold;">← Retour au profil</a>
+             
+             {% if message %}
+                <div style="background-color: #eef2f9; padding: 15px; border-radius: 6px; margin-top: 20px; text-align: center; font-weight: 600; color: #1e2a3a; border: 1px solid #dfe3ea;">
                     {{ message }}
                 </div>
             {% endif %}
+        </div>
 
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left;">
+            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">➕ Ajouter un nouvel étudiant</h3>
             <form action="/admin/etudiants" method="POST" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-                
+                <input type="hidden" name="action_create" value="1">
                 <div style="display: flex; gap: 15px;">
                     <div style="flex: 1;">
-                        <label for="nom" style="font-weight: 600;">Nom *</label>
-                        <input type="text" id="nom" name="nom" required style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                        <label style="font-weight: 600;">Nom *</label>
+                        <input type="text" name="nom" required maxlength="50" pattern="^[^0-9]+$" title="Les chiffres ne sont pas autorisés" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                     </div>
                     <div style="flex: 1;">
-                        <label for="prenom" style="font-weight: 600;">Prénom *</label>
-                        <input type="text" id="prenom" name="prenom" required style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                        <label style="font-weight: 600;">Prénom *</label>
+                        <input type="text" name="prenom" required maxlength="50" pattern="^[^0-9]+$" title="Les chiffres ne sont pas autorisés" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                     </div>
                 </div>
-
                 <div>
-                    <label for="email" style="font-weight: 600;">Adresse Email *</label>
-                    <input type="email" id="email" name="email" required style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                    <label style="font-weight: 600;">Email *</label>
+                    <input type="email" name="email" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                 </div>
+                <div>
+                    <label style="font-weight: 600;">Mot de passe provisoire *</label>
+                    <input type="password" name="password" required maxlength="50" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+                <div>
+                    <label style="font-weight: 600;">Assigner à un Pilote</label>
+                    <select name="id_pilote" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: white;">
+                        <option value="">-- Aucun pilote --</option>
+                        {% for pilote in pilotes %}
+                            <option value="{{ pilote.Id_Utilisateur }}">{{ pilote.prenom }} {{ pilote.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" style="margin-top: 15px;">Créer l'étudiant</button>
+            </form>
+        </div>
+
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left; border-color: #ff6b35;">
+            <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">✏️ Modifier ou Supprimer un étudiant</h3>
+            
+            <div style="margin-top: 20px; margin-bottom: 20px;">
+                <label style="font-weight: 600; color: #ff6b35;">Sélectionner l'étudiant à gérer :</label>
+                <select id="select-etudiant" style="width: 100%; padding: 12px; margin-top: 5px; border: 2px solid #ff6b35; border-radius: 4px; background: white; font-size: 1.1em;">
+                    <option value="">-- Choisir un étudiant dans la liste --</option>
+                    {% for etudiant in etudiants %}
+                        <option value="{{ etudiant.Id_Utilisateur }}">{{ etudiant.nom | upper }} {{ etudiant.prenom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <form id="form-edit" action="/admin/etudiants" method="POST" style="display: none; flex-direction: column; gap: 15px; border-top: 1px solid #eef2f9; padding-top: 20px;">
                 
-                <div>
-                    <label for="password" style="font-weight: 600;">Mot de passe provisoire *</label>
-                    <input type="password" id="password" name="password" required style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                </div>
+                <input type="hidden" id="edit-id" name="id_utilisateur_edit">
 
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Nom</label>
+                        <input type="text" id="edit-nom" name="nom_edit" required maxlength="50" pattern="^[^0-9]+$" title="Les chiffres ne sont pas autorisés" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Prénom</label>
+                        <input type="text" id="edit-prenom" name="prenom_edit" required maxlength="50" pattern="^[^0-9]+$" title="Les chiffres ne sont pas autorisés" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </div>
                 <div>
-                    <label for="id_pilote" style="font-weight: 600;">Assigner à un Pilote</label>
-                    <select id="id_pilote" name="id_pilote" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; background: white;">
-                        <option value="">-- Aucun pilote assigné --</option>
+                    <label style="font-weight: 600;">Email</label>
+                    <input type="email" id="edit-email" name="email_edit" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+                <div>
+                    <label style="font-weight: 600;">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                    <input type="password" name="password_edit" placeholder="••••••••" maxlength="50" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+                <div>
+                    <label style="font-weight: 600;">Pilote référent</label>
+                    <select id="edit-pilote" name="id_pilote_edit" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: white;">
+                        <option value="">-- Aucun pilote --</option>
                         {% for pilote in pilotes %}
                             <option value="{{ pilote.Id_Utilisateur }}">{{ pilote.prenom }} {{ pilote.nom }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 
-                <button type="submit" style="margin-top: 15px;">Créer l'étudiant</button>
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <button type="submit" name="action_update" style="flex: 2; background: #ff6b35;">Enregistrer les modifications</button>
+                    <button type="submit" name="action_delete" style="flex: 1; background: #dc3545;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet étudiant ? Cette action est irréversible.');">Supprimer</button>
+                </div>
             </form>
-            
         </div>
     </section>
+
+    <script>
+        // 1. On convertit la liste des étudiants Twig en un objet JavaScript utilisable
+        const etudiantsData = {
+            {% for etudiant in etudiants %}
+                "{{ etudiant.Id_Utilisateur }}": {
+                    "nom": "{{ etudiant.nom | e('js') }}",
+                    "prenom": "{{ etudiant.prenom | e('js') }}",
+                    "email": "{{ etudiant.email | e('js') }}",
+                    "id_pilote": "{{ etudiant.Id_pilote }}"
+                },
+            {% endfor %}
+        };
+
+        const selector = document.getElementById('select-etudiant');
+        const formEdit = document.getElementById('form-edit');
+
+        // 2. Écouteur d'événement : quand on change la sélection
+        selector.addEventListener('change', function() {
+            const userId = this.value;
+            
+            if (userId && etudiantsData[userId]) {
+                const data = etudiantsData[userId];
+                
+                // On remplit les champs du formulaire de modification
+                document.getElementById('edit-id').value = userId;
+                document.getElementById('edit-nom').value = data.nom;
+                document.getElementById('edit-prenom').value = data.prenom;
+                document.getElementById('edit-email').value = data.email;
+                document.getElementById('edit-pilote').value = data.id_pilote; // Sélectionne le bon pilote
+
+                // On affiche le formulaire
+                formEdit.style.display = 'flex';
+            } else {
+                // Si aucune sélection, on cache le formulaire
+                formEdit.style.display = 'none';
+            }
+        });
+    </script>
 {% endblock %}

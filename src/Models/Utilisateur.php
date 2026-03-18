@@ -41,4 +41,48 @@ class Utilisateur
                              VALUES (?, ?, ?, ?, 1, ?)");
         return $req->execute([$nom, $prenom, $email, $mdp, $idPilote]);
     }
+
+    /**
+     * Récupère TOUS les étudiants (Rôle 1)
+     */
+    public static function getAllEtudiants()
+    {
+        $db = Database::getInstance();
+        $req = $db->query("SELECT * FROM Utilisateur WHERE Id_Role = 1 ORDER BY nom ASC");
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Met à jour un étudiant existant
+     */
+    public static function updateEtudiant($id, $nom, $prenom, $email, $mdp = null, $idPilote = null)
+    {
+        $db = Database::getInstance();
+        
+        // Si un nouveau mot de passe est fourni, on l'inclut dans la requête
+        if (!empty($mdp)) {
+            $sql = "UPDATE Utilisateur SET nom = ?, prenom = ?, email = ?, mot_de_passe = ?, Id_pilote = ? 
+                    WHERE Id_Utilisateur = ? AND Id_Role = 1";
+            $params = [$nom, $prenom, $email, $mdp, $idPilote, $id];
+        } else {
+            // Sinon, on ne touche pas au mot de passe actuel
+            $sql = "UPDATE Utilisateur SET nom = ?, prenom = ?, email = ?, Id_pilote = ? 
+                    WHERE Id_Utilisateur = ? AND Id_Role = 1";
+            $params = [$nom, $prenom, $email, $idPilote, $id];
+        }
+        
+        $req = $db->prepare($sql);
+        return $req->execute($params);
+    }
+
+    /**
+     * Supprime un étudiant
+     */
+    public static function deleteEtudiant($id)
+    {
+        $db = Database::getInstance();
+        // /!\ Attention : cela peut échouer si l'étudiant a des favoris ou candidatures (contraintes SQL)
+        $req = $db->prepare("DELETE FROM Utilisateur WHERE Id_Utilisateur = ? AND Id_Role = 1");
+        return $req->execute([$id]);
+    }
 }
