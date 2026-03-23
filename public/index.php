@@ -74,6 +74,11 @@ switch ($uri) {
         $adminController->gererEntreprises();
         break;
 
+    case '/admin/offres':
+        $adminController = new \App\Controllers\AdminController($twig);
+        $adminController->gererOffres();
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);

@@ -58,4 +58,53 @@ class Offre
         $req->execute([$idOffre]);
         return $req->fetchAll(PDO::FETCH_COLUMN);
     }
+
+    /**
+     * Récupère TOUTES les offres avec le nom de l'entreprise associée (pour la liste admin)
+     */
+    public static function getAll()
+    {
+        $db = Database::getInstance();
+        $sql = "SELECT OFFRE.*, ENTREPRISE.nom AS nom_entreprise 
+                FROM OFFRE 
+                JOIN ENTREPRISE ON OFFRE.Id_ENTREPRISE = ENTREPRISE.Id_ENTREPRISE 
+                ORDER BY date_offre DESC";
+        $req = $db->query($sql);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Crée une nouvelle offre (la date se met automatiquement à aujourd'hui avec CURDATE())
+     */
+    public static function create($titre, $description, $remuneration, $idEntreprise, $lieu, $typeContrat)
+    {
+        $db = Database::getInstance();
+        $req = $db->prepare("INSERT INTO OFFRE (titre, description, base_remuneration, date_offre, Id_ENTREPRISE, lieu, type_contrat) 
+                             VALUES (?, ?, ?, CURDATE(), ?, ?, ?)");
+        return $req->execute([$titre, $description, $remuneration, $idEntreprise, $lieu, $typeContrat]);
+    }
+
+    /**
+     * Met à jour une offre existante
+     */
+    public static function update($id, $titre, $description, $remuneration, $idEntreprise, $lieu, $typeContrat)
+    {
+        $db = Database::getInstance();
+        $req = $db->prepare("UPDATE OFFRE SET titre = ?, description = ?, base_remuneration = ?, Id_ENTREPRISE = ?, lieu = ?, type_contrat = ? 
+                             WHERE Id_OFFRE = ?");
+        return $req->execute([$titre, $description, $remuneration, $idEntreprise, $lieu, $typeContrat, $id]);
+    }
+
+    /**
+     * Supprime une offre
+     */
+    public static function delete($id)
+    {
+        $db = Database::getInstance();
+        // Optionnel : on supprime d'abord les favoris liés à cette offre pour éviter une erreur de clé étrangère
+        $db->prepare("DELETE FROM Mettre_Favori WHERE Id_OFFRE = ?")->execute([$id]);
+        
+        $req = $db->prepare("DELETE FROM OFFRE WHERE Id_OFFRE = ?");
+        return $req->execute([$id]);
+    }
 }

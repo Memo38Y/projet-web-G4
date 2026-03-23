@@ -258,4 +258,84 @@ class AdminController
                  </div>");
         }
     }
+
+    public function gererOffres()
+    {
+        try {
+            // VIGILE Admin (ID 3 !)
+            if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 3) {
+                header('Location: /');
+                exit;
+            }
+
+            $message = null;
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                
+                // 1. CRÉATION
+                if (isset($_POST['action_create'])) {
+                    $titre = $_POST['titre'] ?? '';
+                    $idEntreprise = $_POST['id_entreprise'] ?? '';
+                    $lieu = $_POST['lieu'] ?? '';
+                    $typeContrat = $_POST['type_contrat'] ?? '';
+                    $remuneration = !empty($_POST['remuneration']) ? $_POST['remuneration'] : 0;
+                    $description = $_POST['description'] ?? '';
+
+                    if ($titre && $idEntreprise && $lieu && $typeContrat) {
+                        \App\Models\Offre::create($titre, $description, $remuneration, $idEntreprise, $lieu, $typeContrat);
+                        $message = "✅ L'offre '$titre' a été publiée !";
+                    }
+                }
+                
+                // 2. MODIFICATION
+                elseif (isset($_POST['action_update'])) {
+                    $id = $_POST['id_offre_edit'] ?? null;
+                    $titre = $_POST['titre_edit'] ?? '';
+                    $idEntreprise = $_POST['id_entreprise_edit'] ?? '';
+                    $lieu = $_POST['lieu_edit'] ?? '';
+                    $typeContrat = $_POST['type_contrat_edit'] ?? '';
+                    $remuneration = !empty($_POST['remuneration_edit']) ? $_POST['remuneration_edit'] : 0;
+                    $description = $_POST['description_edit'] ?? '';
+
+                    if ($id && $titre && $idEntreprise) {
+                        \App\Models\Offre::update($id, $titre, $description, $remuneration, $idEntreprise, $lieu, $typeContrat);
+                        $message = "✅ L'offre '$titre' a été mise à jour !";
+                    }
+                }
+                
+                // 3. SUPPRESSION
+                elseif (isset($_POST['action_delete'])) {
+                    $id = $_POST['id_offre_edit'] ?? null;
+                    $titre = $_POST['titre_edit'] ?? '';
+
+                    if ($id) {
+                        try {
+                            \App\Models\Offre::delete($id);
+                            $message = "🗑️ L'offre '$titre' a été supprimée.";
+                        } catch (\PDOException $e) {
+                            $message = "❌ Impossible de supprimer cette offre (des étudiants y ont peut-être déjà postulé).";
+                        }
+                    }
+                }
+            }
+
+            // On récupère les offres ET les entreprises pour le menu déroulant
+            $offres = \App\Models\Offre::getAll();
+            $entreprises = \App\Models\Entreprise::getAll();
+
+            echo $this->twig->render('admin_offres.html.twig', [
+                'offres' => $offres,
+                'entreprises' => $entreprises,
+                'message' => $message
+            ]);
+
+        } catch (\Throwable $e) {
+            die("<div style='background:#ffcccc; padding:20px; color:red; font-family:sans-serif;'>
+                    <h2>🚨 ALERTE ROUGE : ERREUR DÉTECTÉE 🚨</h2>
+                    <p><strong>Message :</strong> " . $e->getMessage() . "</p>
+                    <p><strong>Fichier :</strong> " . $e->getFile() . "</p>
+                    <p><strong>Ligne :</strong> " . $e->getLine() . "</p>
+                 </div>");
+        }
+    }
 }

@@ -1,0 +1,168 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Gérer les Offres - Admin{% endblock %}
+
+{% block content %}
+    <section class="hero" style="padding: 40px 20px;">
+        <h1>Gestion des Offres</h1>
+        <p>Espace réservé à l'administration</p>
+    </section>
+
+    <section class="categories" style="display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 40px 10%;">
+        
+        <div style="width: 100%; max-width: 600px; text-align: left;">
+             <a href="/profil" style="color: #ff6b35; text-decoration: none; font-weight: bold;">← Retour au profil</a>
+             
+             {% if message %}
+                <div style="background-color: #eef2f9; padding: 15px; border-radius: 6px; margin-top: 20px; text-align: center; font-weight: 600; color: #1e2a3a; border: 1px solid #dfe3ea;">
+                    {{ message }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left;">
+            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">➕ Ajouter une Offre</h3>
+            <form action="/admin/offres" method="POST" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                <input type="hidden" name="action_create" value="1">
+                
+                <div>
+                    <label style="font-weight: 600;">Titre de l'offre *</label>
+                    <input type="text" name="titre" required maxlength="100" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+
+                <div>
+                    <label style="font-weight: 600;">Entreprise *</label>
+                    <select name="id_entreprise" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: white;">
+                        <option value="">-- Sélectionner une entreprise --</option>
+                        {% for ent in entreprises %}
+                            <option value="{{ ent.Id_ENTREPRISE }}">{{ ent.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Lieu *</label>
+                        <input type="text" name="lieu" required maxlength="100" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Type de contrat *</label>
+                        <select name="type_contrat" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: white;">
+                            <option value="Stage">Stage</option>
+                            <option value="Alternance">Alternance</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight: 600;">Rémunération de base (€/mois)</label>
+                    <input type="number" step="0.01" name="remuneration" placeholder="Ex: 800.00" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+
+                <div>
+                    <label style="font-weight: 600;">Description de l'offre *</label>
+                    <textarea name="description" required rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical;"></textarea>
+                </div>
+
+                <button type="submit" style="margin-top: 15px;">Publier l'offre</button>
+            </form>
+        </div>
+
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left; border-color: #ff6b35;">
+            <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">✏️ Modifier ou Supprimer une Offre</h3>
+            
+            <div style="margin-top: 20px; margin-bottom: 20px;">
+                <label style="font-weight: 600; color: #ff6b35;">Sélectionner l'offre à gérer :</label>
+                <select id="select-offre" style="width: 100%; padding: 12px; margin-top: 5px; border: 2px solid #ff6b35; border-radius: 4px; background: white; font-size: 1.1em;">
+                    <option value="">-- Choisir une offre --</option>
+                    {% for offre in offres %}
+                        <option value="{{ offre.Id_OFFRE }}">{{ offre.nom_entreprise }} - {{ offre.titre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <form id="form-edit" action="/admin/offres" method="POST" style="display: none; flex-direction: column; gap: 15px; border-top: 1px solid #eef2f9; padding-top: 20px;">
+                <input type="hidden" id="edit-id" name="id_offre_edit">
+                
+                <div>
+                    <label style="font-weight: 600;">Titre de l'offre</label>
+                    <input type="text" id="edit-titre" name="titre_edit" required maxlength="100" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+
+                <div>
+                    <label style="font-weight: 600;">Entreprise</label>
+                    <select id="edit-entreprise" name="id_entreprise_edit" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: white;">
+                        {% for ent in entreprises %}
+                            <option value="{{ ent.Id_ENTREPRISE }}">{{ ent.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Lieu</label>
+                        <input type="text" id="edit-lieu" name="lieu_edit" required maxlength="100" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Type de contrat</label>
+                        <select id="edit-type" name="type_contrat_edit" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background: white;">
+                            <option value="Stage">Stage</option>
+                            <option value="Alternance">Alternance</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight: 600;">Rémunération de base (€/mois)</label>
+                    <input type="number" step="0.01" id="edit-remuneration" name="remuneration_edit" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+
+                <div>
+                    <label style="font-weight: 600;">Description</label>
+                    <textarea id="edit-description" name="description_edit" required rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <button type="submit" name="action_update" style="flex: 2; background: #ff6b35;">Enregistrer les modifications</button>
+                    <button type="submit" name="action_delete" style="flex: 1; background: #dc3545;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette offre ?');">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        const offresData = {
+            {% for offre in offres %}
+                "{{ offre.Id_OFFRE }}": {
+                    "titre": "{{ offre.titre | e('js') }}",
+                    "id_entreprise": "{{ offre.Id_ENTREPRISE }}",
+                    "lieu": "{{ offre.lieu | e('js') }}",
+                    "type_contrat": "{{ offre.type_contrat | e('js') }}",
+                    "remuneration": "{{ offre.base_remuneration }}",
+                    "description": "{{ offre.description | e('js') }}"
+                },
+            {% endfor %}
+        };
+
+        const selector = document.getElementById('select-offre');
+        const formEdit = document.getElementById('form-edit');
+
+        selector.addEventListener('change', function() {
+            const offreId = this.value;
+            if (offreId && offresData[offreId]) {
+                const data = offresData[offreId];
+                document.getElementById('edit-id').value = offreId;
+                document.getElementById('edit-titre').value = data.titre;
+                document.getElementById('edit-entreprise').value = data.id_entreprise;
+                document.getElementById('edit-lieu').value = data.lieu;
+                document.getElementById('edit-type').value = data.type_contrat;
+                document.getElementById('edit-remuneration').value = data.remuneration;
+                document.getElementById('edit-description').value = data.description;
+                
+                formEdit.style.display = 'flex';
+            } else {
+                formEdit.style.display = 'none';
+            }
+        });
+    </script>
+{% endblock %}

@@ -49,7 +49,7 @@
                     {% if session.user.role == 1 %}
                         <button style="font-size: 1.1em; padding: 12px 30px;">Postuler à cette offre</button>
                     {% else %}
-                        <p style="color: #888;"><em>Connecté en tant que {{ session.user.role == 2 ? 'Pilote' : (session.user.role == 4 ? 'Administrateur' : 'Délégué') }}. Seuls les étudiants peuvent postuler.</em></p>
+                        <p style="color: #888;"><em>Connecté en tant que {{ session.user.role == 2 ? 'Pilote' : (session.user.role == 3 ? 'Administrateur') }}. Seuls les étudiants peuvent postuler.</em></p>
                     {% endif %}
                 {% else %}
                     <p style="margin-bottom: 15px;">Connectez-vous pour postuler à cette offre.</p>
