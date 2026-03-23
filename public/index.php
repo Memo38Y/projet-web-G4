@@ -69,6 +69,11 @@ switch ($uri) {
         $adminController->gererPilotes();
         break;
 
+    case '/admin/entreprises':
+        $adminController = new \App\Controllers\AdminController($twig);
+        $adminController->gererEntreprises();
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);

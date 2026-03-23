@@ -174,4 +174,88 @@ class AdminController
             'message' => $message
         ]);
     }
+
+    public function gererEntreprises()
+    {
+        try {
+            // VIGILE Admin
+            if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 3) {
+                header('Location: /');
+                exit;
+            }
+
+            $message = null;
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                
+                // 1. CRÉATION
+                if (isset($_POST['action_create'])) {
+                    $nom = $_POST['nom'] ?? '';
+                    $description = $_POST['description'] ?? '';
+                    $email = $_POST['email_contact'] ?? '';
+                    $tel = $_POST['tel_contact'] ?? '';
+                    $secteur = $_POST['secteur_activite'] ?? '';
+
+                    if ($nom && $email && $description) {
+                        if (strlen($nom) > 100) {
+                            $message = "❌ Erreur : Le nom de l'entreprise est trop long.";
+                        } else {
+                            \App\Models\Entreprise::create($nom, $description, $email, $tel, $secteur);
+                            $message = "✅ L'entreprise $nom a été ajoutée !";
+                        }
+                    }
+                }
+                
+                // 2. MODIFICATION
+                elseif (isset($_POST['action_update'])) {
+                    $id = $_POST['id_entreprise_edit'] ?? null;
+                    $nom = $_POST['nom_edit'] ?? '';
+                    $description = $_POST['description_edit'] ?? '';
+                    $email = $_POST['email_edit'] ?? '';
+                    $tel = $_POST['tel_edit'] ?? '';
+                    $secteur = $_POST['secteur_edit'] ?? '';
+
+                    if ($id && $nom && $email) {
+                        if (strlen($nom) > 100) {
+                            $message = "❌ Erreur : Le nom de l'entreprise est trop long.";
+                        } else {
+                            \App\Models\Entreprise::update($id, $nom, $description, $email, $tel, $secteur);
+                            $message = "✅ Informations de l'entreprise $nom mises à jour !";
+                        }
+                    }
+                }
+                
+                // 3. SUPPRESSION
+                elseif (isset($_POST['action_delete'])) {
+                    $id = $_POST['id_entreprise_edit'] ?? null;
+                    $nom = $_POST['nom_edit'] ?? '';
+
+                    if ($id) {
+                        try {
+                            \App\Models\Entreprise::delete($id);
+                            $message = "🗑️ L'entreprise $nom a été supprimée.";
+                        } catch (\PDOException $e) {
+                            $message = "❌ Impossible de supprimer cette entreprise car elle a déjà publié des offres de stage.";
+                        }
+                    }
+                }
+            }
+
+            $entreprises = \App\Models\Entreprise::getAll();
+
+            echo $this->twig->render('admin_entreprises.html.twig', [
+                'entreprises' => $entreprises,
+                'message' => $message
+            ]);
+
+        // 🚨 SI UNE ERREUR ARRIVE, ON L'AFFICHE EN ROUGE 🚨
+        } catch (\Throwable $e) {
+            die("<div style='background:#ffcccc; padding:20px; color:red; font-family:sans-serif;'>
+                    <h2>🚨 ALERTE ROUGE : ERREUR DÉTECTÉE 🚨</h2>
+                    <p><strong>Message :</strong> " . $e->getMessage() . "</p>
+                    <p><strong>Fichier :</strong> " . $e->getFile() . "</p>
+                    <p><strong>Ligne :</strong> " . $e->getLine() . "</p>
+                 </div>");
+        }
+    }
 }

@@ -1,0 +1,142 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Gérer les Entreprises - Admin{% endblock %}
+
+{% block content %}
+    <section class="hero" style="padding: 40px 20px;">
+        <h1>Gestion des Entreprises</h1>
+        <p>Espace réservé à l'administration</p>
+    </section>
+
+    <section class="categories" style="display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 40px 10%;">
+        
+        <div style="width: 100%; max-width: 600px; text-align: left;">
+             <a href="/profil" style="color: #ff6b35; text-decoration: none; font-weight: bold;">← Retour au profil</a>
+             
+             {% if message %}
+                <div style="background-color: #eef2f9; padding: 15px; border-radius: 6px; margin-top: 20px; text-align: center; font-weight: 600; color: #1e2a3a; border: 1px solid #dfe3ea;">
+                    {{ message }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left;">
+            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">➕ Ajouter une Entreprise</h3>
+            <form action="/admin/entreprises" method="POST" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                <input type="hidden" name="action_create" value="1">
+                
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Nom de l'entreprise *</label>
+                        <input type="text" name="nom" required maxlength="100" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Secteur d'activité</label>
+                        <input type="text" name="secteur_activite" maxlength="100" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight: 600;">Description *</label>
+                    <textarea name="description" required rows="3" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Email de contact *</label>
+                        <input type="email" name="email_contact" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Téléphone</label>
+                        <input type="tel" name="tel_contact" pattern="^[0-9\s\+]+$" title="Format valide: +33 6 12 34 56 78" maxlength="20" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </div>
+
+                <button type="submit" style="margin-top: 15px;">Créer l'entreprise</button>
+            </form>
+        </div>
+
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left; border-color: #ff6b35;">
+            <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">✏️ Modifier ou Supprimer une Entreprise</h3>
+            
+            <div style="margin-top: 20px; margin-bottom: 20px;">
+                <label style="font-weight: 600; color: #ff6b35;">Sélectionner l'entreprise à gérer :</label>
+                <select id="select-entreprise" style="width: 100%; padding: 12px; margin-top: 5px; border: 2px solid #ff6b35; border-radius: 4px; background: white; font-size: 1.1em;">
+                    <option value="">-- Choisir une entreprise --</option>
+                    {% for ent in entreprises %}
+                        <option value="{{ ent.Id_ENTREPRISE }}">{{ ent.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <form id="form-edit" action="/admin/entreprises" method="POST" style="display: none; flex-direction: column; gap: 15px; border-top: 1px solid #eef2f9; padding-top: 20px;">
+                <input type="hidden" id="edit-id" name="id_entreprise_edit">
+                
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Nom</label>
+                        <input type="text" id="edit-nom" name="nom_edit" required maxlength="100" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Secteur d'activité</label>
+                        <input type="text" id="edit-secteur" name="secteur_edit" maxlength="100" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-weight: 600;">Description</label>
+                    <textarea id="edit-description" name="description_edit" required rows="3" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Email</label>
+                        <input type="email" id="edit-email" name="email_edit" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600;">Téléphone</label>
+                        <input type="tel" id="edit-tel" name="tel_edit" pattern="^[0-9\s\+]+$" title="Format valide: +33 6 12 34 56 78" maxlength="20" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <button type="submit" name="action_update" style="flex: 2; background: #ff6b35;">Enregistrer les modifications</button>
+                    <button type="submit" name="action_delete" style="flex: 1; background: #dc3545;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        const entreprisesData = {
+            {% for ent in entreprises %}
+                "{{ ent.Id_ENTREPRISE }}": {
+                    "nom": "{{ ent.nom | e('js') }}",
+                    "description": "{{ ent.description | e('js') }}",
+                    "email": "{{ ent.email_contact | e('js') }}",
+                    "tel": "{{ ent.tel_contact | e('js') }}",
+                    "secteur": "{{ ent.secteur_activite | e('js') }}"
+                },
+            {% endfor %}
+        };
+
+        const selector = document.getElementById('select-entreprise');
+        const formEdit = document.getElementById('form-edit');
+
+        selector.addEventListener('change', function() {
+            const entId = this.value;
+            if (entId && entreprisesData[entId]) {
+                const data = entreprisesData[entId];
+                document.getElementById('edit-id').value = entId;
+                document.getElementById('edit-nom').value = data.nom;
+                document.getElementById('edit-description').value = data.description;
+                document.getElementById('edit-email').value = data.email;
+                document.getElementById('edit-tel').value = data.tel;
+                document.getElementById('edit-secteur').value = data.secteur;
+                formEdit.style.display = 'flex';
+            } else {
+                formEdit.style.display = 'none';
+            }
+        });
+    </script>
+{% endblock %}
