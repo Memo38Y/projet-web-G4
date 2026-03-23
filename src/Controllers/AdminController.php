@@ -338,4 +338,52 @@ class AdminController
                  </div>");
         }
     }
+
+    public function gererCompetences()
+    {
+        try {
+            // VIGILE Admin (Rôle 3)
+            if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 3) {
+                header('Location: /');
+                exit;
+            }
+
+            $message = null;
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // 1. CRÉATION
+                if (isset($_POST['action_create'])) {
+                    $libelle = trim($_POST['libelle'] ?? '');
+                    
+                    if ($libelle) {
+                        \App\Models\Competence::create($libelle);
+                        $message = "✅ La compétence '$libelle' a été ajoutée au dictionnaire !";
+                    }
+                }
+                // 2. SUPPRESSION
+                elseif (isset($_POST['action_delete'])) {
+                    $id = $_POST['id_competence'] ?? null;
+                    
+                    if ($id) {
+                        \App\Models\Competence::delete($id);
+                        $message = "🗑️ La compétence a été supprimée définitivement.";
+                    }
+                }
+            }
+
+            // On récupère la liste pour l'afficher
+            $competences = \App\Models\Competence::getAll();
+
+            echo $this->twig->render('admin_competences.html.twig', [
+                'competences' => $competences,
+                'message' => $message
+            ]);
+
+        } catch (\Throwable $e) {
+            die("<div style='background:#ffcccc; padding:20px; color:red;'>
+                    <h2>🚨 ERREUR COMPÉTENCES 🚨</h2>
+                    <p>" . $e->getMessage() . "</p>
+                 </div>");
+        }
+    }
 }

@@ -79,6 +79,11 @@ switch ($uri) {
         $adminController->gererOffres();
         break;
 
+    case '/admin/competences':
+        $adminController = new \App\Controllers\AdminController($twig);
+        $adminController->gererCompetences();
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);

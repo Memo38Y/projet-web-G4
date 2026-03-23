@@ -1,0 +1,55 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Dictionnaire des Compétences - Admin{% endblock %}
+
+{% block content %}
+    <section class="hero" style="padding: 40px 20px;">
+        <h1>Dictionnaire des Compétences</h1>
+        <p>Gère les compétences disponibles pour les offres</p>
+    </section>
+
+    <section class="categories" style="display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 40px 10%;">
+        
+        <div style="width: 100%; max-width: 600px; display: flex; justify-content: space-between; align-items: center;">
+             <a href="/admin/offres" style="color: #ff6b35; text-decoration: none; font-weight: bold;">← Retour aux Offres</a>
+        </div>
+
+        {% if message %}
+            <div style="width: 100%; max-width: 600px; background-color: #eef2f9; padding: 15px; border-radius: 6px; text-align: center; font-weight: 600; color: #1e2a3a;">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left;">
+            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">➕ Ajouter une compétence</h3>
+            <form action="/admin/competences" method="POST" style="display: flex; gap: 15px; margin-top: 20px; align-items: flex-end;">
+                <input type="hidden" name="action_create" value="1">
+                <div style="flex: 1;">
+                    <label style="font-weight: 600;">Nom de la compétence (ex: PHP, Figma, Gestion de projet...)</label>
+                    <input type="text" name="libelle" required maxlength="50" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin-top: 5px;">
+                </div>
+                <button type="submit" style="padding: 10px 20px;">Ajouter</button>
+            </form>
+        </div>
+
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left; border-color: #ff6b35;">
+            <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">🗑️ Compétences existantes</h3>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                {% for comp in competences %}
+                    <form action="/admin/competences" method="POST" style="display: inline-block;">
+                        <input type="hidden" name="action_delete" value="1">
+                        <input type="hidden" name="id_competence" value="{{ comp.Id_COMPETENCE }}">
+                        
+                        <div style="background: #1e2a3a; color: white; padding: 8px 15px; border-radius: 20px; display: flex; align-items: center; gap: 10px; font-size: 0.9em;">
+                            {{ comp.libelle }}
+                            <button type="submit" style="background: transparent; border: none; color: #ff6b35; font-weight: bold; padding: 0; cursor: pointer; font-size: 1.2em;" title="Supprimer" onclick="return confirm('Supprimer cette compétence de la base de données ?');">×</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <p style="color: #888; font-style: italic;">Aucune compétence n'a encore été créée.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
