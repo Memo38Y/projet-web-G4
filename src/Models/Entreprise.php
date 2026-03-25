@@ -111,4 +111,22 @@ class Entreprise
         $req->execute([$idUser]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Récupère la liste de toutes les évaluations pour une entreprise donnée
+     * (avec le prénom et le nom du pilote qui a laissé la note)
+     */
+    public static function getEvaluationsByEntreprise($idEntreprise)
+    {
+        $db = Database::getInstance();
+        $sql = "SELECT Evaluer.note, Utilisateur.prenom, Utilisateur.nom 
+                FROM Evaluer 
+                JOIN Utilisateur ON Evaluer.Id_Utilisateur = Utilisateur.Id_Utilisateur 
+                WHERE Evaluer.Id_ENTREPRISE = ? 
+                ORDER BY Evaluer.note DESC";
+                
+        $req = $db->prepare($sql);
+        $req->execute([$idEntreprise]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

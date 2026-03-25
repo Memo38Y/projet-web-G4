@@ -56,18 +56,22 @@ class EntrepriseController
             $mesFavorisIds = array_column($offresFavorites, 'Id_OFFRE');
         }
 
-        // 5. NOUVEAU : On vérifie si l'utilisateur connecté (Pilote=2 ou Admin=3) a déjà évalué cette entreprise
+        // 5. On vérifie si l'utilisateur connecté a déjà évalué cette entreprise
         $monEvaluation = null;
         if (isset($_SESSION['user']) && in_array($_SESSION['user']['role'], [2, 3])) {
             $monEvaluation = \App\Models\Entreprise::getEvaluation($_SESSION['user']['id'], $id);
         }
 
-        // 6. On envoie absolument toutes les données à la page Twig
+        // 6. NOUVEAU : On récupère toutes les évaluations publiques de cette entreprise
+        $evaluationsEntreprise = \App\Models\Entreprise::getEvaluationsByEntreprise($id);
+
+        // 7. On envoie absolument toutes les données à la page Twig
         echo $this->twig->render('entreprise_offres.html.twig', [
             'entreprise' => $entreprise,
             'offres' => $offres,
             'mesFavorisIds' => $mesFavorisIds,
-            'monEvaluation' => $monEvaluation // <- L'évaluation est envoyée à la vue !
+            'monEvaluation' => $monEvaluation,
+            'evaluationsEntreprise' => $evaluationsEntreprise // <-- Ne pas oublier de l'ajouter ici !
         ]);
     }
 
