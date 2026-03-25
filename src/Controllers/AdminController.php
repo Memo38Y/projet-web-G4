@@ -354,7 +354,6 @@ class AdminController
                 // 1. CRÉATION
                 if (isset($_POST['action_create'])) {
                     $libelle = trim($_POST['libelle'] ?? '');
-                    
                     if ($libelle) {
                         \App\Models\Competence::create($libelle);
                         $message = "✅ La compétence '$libelle' a été ajoutée au dictionnaire !";
@@ -363,19 +362,33 @@ class AdminController
                 // 2. SUPPRESSION
                 elseif (isset($_POST['action_delete'])) {
                     $id = $_POST['id_competence'] ?? null;
-                    
                     if ($id) {
                         \App\Models\Competence::delete($id);
                         $message = "🗑️ La compétence a été supprimée définitivement.";
                     }
                 }
+                // 3. SYNCHRONISATION AVEC UNE OFFRE
+                elseif (isset($_POST['action_sync'])) {
+                    $idOffre = $_POST['id_offre'] ?? null;
+                    $competencesChoisies = $_POST['competences'] ?? []; // Tableau des cases cochées
+
+                    if ($idOffre) {
+                        \App\Models\Competence::syncForOffre($idOffre, $competencesChoisies);
+                        $message = "🔗 Les compétences de l'offre ont été mises à jour avec succès !";
+                    }
+                }
             }
 
-            // On récupère la liste pour l'afficher
+            // On prépare toutes les données pour la vue
             $competences = \App\Models\Competence::getAll();
+            $offres = \App\Models\Offre::getAll();
+            $relations = \App\Models\Competence::getAllRelations();
 
             echo $this->twig->render('admin_competences.html.twig', [
                 'competences' => $competences,
+                'offres' => $offres,
+                // On transforme le tableau PHP en texte JSON pour que JavaScript puisse le lire facilement
+                'relations' => json_encode($relations),
                 'message' => $message
             ]);
 

@@ -5,7 +5,7 @@
 {% block content %}
     <section class="hero" style="padding: 40px 20px;">
         <h1>Dictionnaire des Compétences</h1>
-        <p>Gère les compétences disponibles pour les offres</p>
+        <p>Gère les compétences et associe-les aux offres</p>
     </section>
 
     <section class="categories" style="display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 40px 10%;">
@@ -25,15 +25,48 @@
             <form action="/admin/competences" method="POST" style="display: flex; gap: 15px; margin-top: 20px; align-items: flex-end;">
                 <input type="hidden" name="action_create" value="1">
                 <div style="flex: 1;">
-                    <label style="font-weight: 600;">Nom de la compétence (ex: PHP, Figma, Gestion de projet...)</label>
-                    <input type="text" name="libelle" required maxlength="50" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin-top: 5px;">
+                    <label style="font-weight: 600;">Nom de la compétence</label>
+                    <input type="text" name="libelle" placeholder="Ex: PHP, Figma, Agile..." required maxlength="50" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin-top: 5px;">
                 </div>
                 <button type="submit" style="padding: 10px 20px;">Ajouter</button>
             </form>
         </div>
 
         <div class="job-card" style="width: 100%; max-width: 600px; text-align: left; border-color: #ff6b35;">
-            <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">🗑️ Compétences existantes</h3>
+            <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">🔗 Lier les compétences à une offre</h3>
+            
+            <form action="/admin/competences" method="POST" style="margin-top: 20px;">
+                <input type="hidden" name="action_sync" value="1">
+                
+                <label style="font-weight: 600; color: #ff6b35;">Sélectionner une offre :</label>
+                <select id="select-offre-comp" name="id_offre" required style="width: 100%; padding: 12px; margin-top: 5px; border: 2px solid #ff6b35; border-radius: 4px; background: white; font-size: 1.1em;">
+                    <option value="">-- Choisir une offre dans la liste --</option>
+                    {% for offre in offres %}
+                        <option value="{{ offre.Id_OFFRE }}">{{ offre.nom_entreprise }} - {{ offre.titre }}</option>
+                    {% endfor %}
+                </select>
+
+                <div id="checkboxes-container" style="display: none; margin-top: 25px; border-top: 1px solid #eef2f9; padding-top: 15px;">
+                    <p style="font-weight: 600; margin-bottom: 15px;">Cochez les compétences requises pour ce poste :</p>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+                        {% for comp in competences %}
+                            <label style="background: #f5f7fb; padding: 8px 15px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; border: 1px solid #dfe3ea;">
+                                <input type="checkbox" name="competences[]" value="{{ comp.Id_COMPETENCE }}" class="comp-checkbox" style="transform: scale(1.2);">
+                                {{ comp.libelle }}
+                            </label>
+                        {% else %}
+                            <p style="color: #888;">Créez d'abord des compétences ci-dessus.</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <button type="submit" style="width: 100%; background: #ff6b35;">Sauvegarder les compétences de cette offre</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left;">
+            <h3 style="color: #1e2a3a; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">📚 Toutes les compétences existantes</h3>
             
             <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
                 {% for comp in competences %}
@@ -43,13 +76,46 @@
                         
                         <div style="background: #1e2a3a; color: white; padding: 8px 15px; border-radius: 20px; display: flex; align-items: center; gap: 10px; font-size: 0.9em;">
                             {{ comp.libelle }}
-                            <button type="submit" style="background: transparent; border: none; color: #ff6b35; font-weight: bold; padding: 0; cursor: pointer; font-size: 1.2em;" title="Supprimer" onclick="return confirm('Supprimer cette compétence de la base de données ?');">×</button>
+                            <button type="submit" style="background: transparent; border: none; color: #ff6b35; font-weight: bold; padding: 0; cursor: pointer; font-size: 1.2em;" title="Supprimer" onclick="return confirm('Supprimer cette compétence ? Elle sera retirée de toutes les offres.');">×</button>
                         </div>
                     </form>
-                {% else %}
-                    <p style="color: #888; font-style: italic;">Aucune compétence n'a encore été créée.</p>
                 {% endfor %}
             </div>
         </div>
+
     </section>
+
+    <script>
+        // On récupère le JSON envoyé par le contrôleur (ex: {"1":[2,4], "3":[1]})
+        const relations = {{ relations | raw }};
+        
+        const selector = document.getElementById('select-offre-comp');
+        const container = document.getElementById('checkboxes-container');
+        const checkboxes = document.querySelectorAll('.comp-checkbox');
+
+        selector.addEventListener('change', function() {
+            const offreId = this.value;
+            
+            if (offreId) {
+                // On affiche la zone des cases à cocher
+                container.style.display = 'block';
+                
+                // On récupère le tableau des compétences déjà assignées à cette offre (ou un tableau vide)
+                const assignedComps = relations[offreId] || [];
+                
+                // On parcourt toutes les cases à cocher de la page
+                checkboxes.forEach(cb => {
+                    // Si l'ID de la case est dans la liste des compétences assignées, on la coche
+                    if (assignedComps.includes(parseInt(cb.value)) || assignedComps.includes(cb.value)) {
+                        cb.checked = true;
+                    } else {
+                        cb.checked = false;
+                    }
+                });
+            } else {
+                // Si on remet "-- Choisir une offre --", on recache tout
+                container.style.display = 'none';
+            }
+        });
+    </script>
 {% endblock %}
