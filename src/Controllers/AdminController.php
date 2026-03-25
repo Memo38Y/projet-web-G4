@@ -397,4 +397,91 @@ class AdminController
                  </div>");
         }
     }
+
+    public function gererMesEtudiants()
+    {
+        try {
+            // VIGILE : STRICTEMENT RÉSERVÉ AUX PILOTES (Rôle 2)
+            if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 2) {
+                header('Location: /');
+                exit;
+            }
+
+            $message = null;
+            // On récupère l'ID du Pilote connecté !
+            $monIdPilote = $_SESSION['user']['id']; 
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                
+                // 1. CRÉATION
+                if (isset($_POST['action_create'])) {
+                    $nom = $_POST['nom'] ?? '';
+                    $prenom = $_POST['prenom'] ?? '';
+                    $email = $_POST['email'] ?? '';
+                    $mdp = $_POST['password'] ?? '';
+
+                    if ($nom && $prenom && $email && $mdp) {
+                        if (preg_match('/\d/', $nom) || preg_match('/\d/', $prenom)) {
+                            $message = "❌ Erreur : Le nom et le prénom ne doivent pas contenir de chiffres.";
+                        } elseif (strlen($nom) > 50 || strlen($prenom) > 50 || strlen($mdp) > 50) {
+                            $message = "❌ Erreur : Limite de 50 caractères dépassée.";
+                        } else {
+                            // On force l'ID du pilote connecté lors de la création !
+                            \App\Models\Utilisateur::createEtudiant($nom, $prenom, $email, $mdp, $monIdPilote);
+                            $message = "✅ Ton étudiant $prenom $nom a été créé et t'a été assigné !";
+                        }
+                    }
+                }
+                
+                // 2. MODIFICATION
+                elseif (isset($_POST['action_update'])) {
+                    $id = $_POST['id_utilisateur_edit'] ?? null;
+                    $nom = $_POST['nom_edit'] ?? '';
+                    $prenom = $_POST['prenom_edit'] ?? '';
+                    $email = $_POST['email_edit'] ?? '';
+                    $mdp = $_POST['password_edit'] ?? null;
+
+                    if ($id && $nom && $prenom && $email) {
+                        if (preg_match('/\d/', $nom) || preg_match('/\d/', $prenom)) {
+                            $message = "❌ Erreur : Le nom et le prénom ne doivent pas contenir de chiffres.";
+                        } elseif (strlen($nom) > 50 || strlen($prenom) > 50 || (!empty($mdp) && strlen($mdp) > 50)) {
+                            $message = "❌ Erreur : Limite de 50 caractères dépassée.";
+                        } else {
+                            // On force l'ID du pilote connecté pour s'assurer qu'il reste son tuteur
+                            \App\Models\Utilisateur::updateEtudiant($id, $nom, $prenom, $email, $mdp, $monIdPilote);
+                            $message = "✅ Informations de $prenom mises à jour !";
+                        }
+                    }
+                }
+                
+                // 3. SUPPRESSION
+                elseif (isset($_POST['action_delete'])) {
+                    $id = $_POST['id_utilisateur_edit'] ?? null;
+                    $prenom = $_POST['prenom_edit'] ?? '';
+
+                    if ($id) {
+                        try {
+                            \App\Models\Utilisateur::deleteEtudiant($id);
+                            $message = "🗑️ L'étudiant $prenom a été supprimé de ta promotion.";
+                        } catch (\PDOException $e) {
+                            $message = "❌ Impossible de supprimer cet étudiant (candidatures en cours).";
+                        }
+                    }
+                }
+            }
+
+            // On récupère UNIQUEMENT les étudiants de ce pilote
+            $mesEtudiants = \App\Models\Utilisateur::getEtudiantsByPilote($monIdPilote);
+
+            echo $this->twig->render('pilote_etudiants.html.twig', [
+                'etudiants' => $mesEtudiants,
+                'message' => $message
+            ]);
+
+        } catch (\Throwable $e) {
+            die("<div style='background:#ffcccc; padding:20px; color:red;'>
+                    <h2>🚨 ERREUR 🚨</h2><p>" . $e->getMessage() . "</p>
+                 </div>");
+        }
+    }
 }

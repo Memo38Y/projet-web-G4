@@ -133,4 +133,15 @@ class Utilisateur
         $req2 = $db->prepare("DELETE FROM Utilisateur WHERE Id_Utilisateur = ? AND Id_Role = 2");
         return $req2->execute([$id]);
     }
+
+    /**
+     * Récupère uniquement les étudiants assignés à un Pilote spécifique
+     */
+    public static function getEtudiantsByPilote($idPilote)
+    {
+        $db = Database::getInstance();
+        $req = $db->prepare("SELECT * FROM Utilisateur WHERE Id_Role = 1 AND Id_pilote = ? ORDER BY nom ASC");
+        $req->execute([$idPilote]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

@@ -75,6 +75,14 @@
                             </button>
                         </a>
                     {% endif %}
+
+                    {% if session.user.role == 2 %}
+                        <a href="/pilote/etudiants" style="text-decoration: none; grid-column: span 2;">
+                            <button style="width: 100%; padding: 15px; background: #1e2a3a; border-radius: 8px; font-size: 1.05em; transition: 0.3s; margin-bottom: 15px;">
+                                👨‍🎓 Gérer Mes Étudiants
+                            </button>
+                        </a>
+                    {% endif %}
                     
                     <a href="/admin/entreprises" style="text-decoration: none;">
                         <button style="width: 100%; padding: 15px; background: #2a6df4; border-radius: 8px; font-size: 1.05em; transition: 0.3s;">
