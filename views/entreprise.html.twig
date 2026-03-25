@@ -31,7 +31,7 @@
                     <button style="margin-top: 15px;">Voir les offres de cette entreprise</button>
                 </a>
 
-                {% if session.user.role in [2, 4] %}
+                {% if session.user.role in [2, 3] %}
                     <button style="margin-top: 15px; background: #ff6b35;">Notez cette entreprise</button>
                 {% endif %}
                 
