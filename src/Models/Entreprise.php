@@ -94,4 +94,21 @@ class Entreprise
         $req = $db->prepare("DELETE FROM Evaluer WHERE Id_Utilisateur = ? AND Id_ENTREPRISE = ?");
         return $req->execute([$idUser, $idEntreprise]);
     }
+
+    /**
+     * Récupère toutes les évaluations laissées par un utilisateur (Pilote ou Admin)
+     */
+    public static function getEvaluationsByUser($idUser)
+    {
+        $db = Database::getInstance();
+        $sql = "SELECT Evaluer.*, ENTREPRISE.nom AS nom_entreprise 
+                FROM Evaluer 
+                JOIN ENTREPRISE ON Evaluer.Id_ENTREPRISE = ENTREPRISE.Id_ENTREPRISE 
+                WHERE Evaluer.Id_Utilisateur = ? 
+                ORDER BY Evaluer.note DESC"; // On trie pour afficher les meilleures notes en premier
+                
+        $req = $db->prepare($sql);
+        $req->execute([$idUser]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

@@ -56,6 +56,37 @@
             {% endif %}
 
             {% if session.user.role in [2, 3] %}
+                <h3 style="color: #d49a11; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 30px;">⭐ Mes Évaluations d'Entreprises</h3>
+                
+                {% if mesEvaluations is not empty %}
+                    <div style="display: grid; gap: 15px; margin-top: 20px;">
+                        {% for eval in mesEvaluations %}
+                            <div style="background: #fdfaf6; border: 1px solid #f9eac5; border-radius: 8px; padding: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                                <div style="flex: 1; min-width: 250px;">
+                                    <h4 style="margin: 0 0 5px 0; color: #1e2a3a; font-size: 1.1em;">{{ eval.nom_entreprise }}</h4>
+                                    <p style="margin: 0 0 5px 0; color: #d49a11; font-weight: bold;">Note : {{ eval.note }} / 5</p>
+                                    
+                                    {% if eval.avis %}
+                                        <p style="margin: 0; font-style: italic; color: #555; font-size: 0.9em; border-left: 3px solid #f4b41a; padding-left: 10px;">"{{ eval.avis }}"</p>
+                                    {% endif %}
+                                </div>
+                                
+                                <a href="/entreprise_offres?id={{ eval.Id_ENTREPRISE }}" style="text-decoration: none;">
+                                    <button style="background: #2a6df4; color: white; padding: 8px 15px; border: none; border-radius: 4px; font-size: 0.9em; cursor: pointer;">
+                                        Voir l'entreprise
+                                    </button>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div style="background: #f8f9fa; border: 1px dashed #ccc; border-radius: 8px; padding: 20px; text-align: center; margin-top: 15px;">
+                        <p style="color: #777; font-style: italic; margin: 0;">Tu n'as pas encore évalué d'entreprise. Visite la page d'une entreprise pour y laisser ton premier avis !</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            {% if session.user.role in [2, 3] %}
                 <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 30px;">⚙️ Panneau de Gestion</h3>
                 
                 <p style="color: #555; margin-bottom: 15px;">Sélectionne la ressource que tu souhaites gérer :</p>
