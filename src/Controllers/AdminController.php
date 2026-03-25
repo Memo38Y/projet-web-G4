@@ -178,8 +178,7 @@ class AdminController
     public function gererEntreprises()
     {
         try {
-            // VIGILE Admin
-            if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 3) {
+            if (!isset($_SESSION['user']) || !in_array($_SESSION['user']['role'], [2, 3])) {
                 header('Location: /');
                 exit;
             }
@@ -262,8 +261,7 @@ class AdminController
     public function gererOffres()
     {
         try {
-            // VIGILE Admin (ID 3 !)
-            if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 3) {
+            if (!isset($_SESSION['user']) || !in_array($_SESSION['user']['role'], [2, 3])) {
                 header('Location: /');
                 exit;
             }
@@ -343,7 +341,7 @@ class AdminController
     {
         try {
             // VIGILE Admin (Rôle 3)
-            if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 3) {
+            if (!isset($_SESSION['user']) || !in_array($_SESSION['user']['role'], [2, 3])) {
                 header('Location: /');
                 exit;
             }

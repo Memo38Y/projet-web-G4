@@ -20,8 +20,6 @@
             {% elseif session.user.role == 2 %}
                 Pilote
             {% elseif session.user.role == 3 %}
-                Délégué
-            {% elseif session.user.role == 4 %}
                 Administrateur
             {% else %}
                 Rôle inconnu
@@ -57,33 +55,35 @@
                 {% endif %}
             {% endif %}
 
-            {% if session.user.role == 3 %}
-                <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 30px;">⚙️ Panneau d'Administration</h3>
+            {% if session.user.role in [2, 3] %}
+                <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 30px;">⚙️ Panneau de Gestion</h3>
                 
-                <p style="color: #555; margin-bottom: 15px;">Sélectionne la ressource que tu souhaites gérer ou modifier :</p>
+                <p style="color: #555; margin-bottom: 15px;">Sélectionne la ressource que tu souhaites gérer :</p>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
                     
-                    <a href="/admin/etudiants" style="text-decoration: none;">
-                        <button style="width: 100%; padding: 15px; background: #1e2a3a; border-radius: 8px; font-size: 1.05em; transition: 0.3s;">
-                            🎓 Gérer les Étudiants
-                        </button>
-                    </a>
-                    
-                    <a href="/admin/pilotes" style="text-decoration: none;">
-                        <button style="width: 100%; padding: 15px; background: #1e2a3a; border-radius: 8px; font-size: 1.05em; transition: 0.3s;">
-                            👨‍🏫 Gérer les Pilotes
-                        </button>
-                    </a>
+                    {% if session.user.role == 3 %}
+                        <a href="/admin/etudiants" style="text-decoration: none;">
+                            <button style="width: 100%; padding: 15px; background: #1e2a3a; border-radius: 8px; font-size: 1.05em; transition: 0.3s;">
+                                🎓 Gérer tous les Étudiants
+                            </button>
+                        </a>
+                        
+                        <a href="/admin/pilotes" style="text-decoration: none;">
+                            <button style="width: 100%; padding: 15px; background: #1e2a3a; border-radius: 8px; font-size: 1.05em; transition: 0.3s;">
+                                👨‍🏫 Gérer les Pilotes
+                            </button>
+                        </a>
+                    {% endif %}
                     
                     <a href="/admin/entreprises" style="text-decoration: none;">
-                        <button style="width: 100%; padding: 15px; background: #1e2a3a; border-radius: 8px; font-size: 1.05em; transition: 0.3s;">
+                        <button style="width: 100%; padding: 15px; background: #2a6df4; border-radius: 8px; font-size: 1.05em; transition: 0.3s;">
                             🏢 Gérer les Entreprises
                         </button>
                     </a>
                     
                     <a href="/admin/offres" style="text-decoration: none;">
-                        <button style="width: 100%; padding: 15px; background: #1e2a3a; border-radius: 8px; font-size: 1.05em; transition: 0.3s;">
+                        <button style="width: 100%; padding: 15px; background: #2a6df4; border-radius: 8px; font-size: 1.05em; transition: 0.3s;">
                             💼 Gérer les Offres
                         </button>
                     </a>
