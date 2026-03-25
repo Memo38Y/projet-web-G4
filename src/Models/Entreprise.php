@@ -59,4 +59,39 @@ class Entreprise
         $req = $db->prepare("DELETE FROM ENTREPRISE WHERE Id_ENTREPRISE = ?");
         return $req->execute([$id]);
     }
+
+    /**
+     * Récupère l'évaluation d'un utilisateur spécifique pour une entreprise
+     */
+    public static function getEvaluation($idUser, $idEntreprise)
+    {
+        $db = Database::getInstance();
+        $req = $db->prepare("SELECT * FROM Evaluer WHERE Id_Utilisateur = ? AND Id_ENTREPRISE = ?");
+        $req->execute([$idUser, $idEntreprise]);
+        return $req->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Sauvegarde (ajoute ou modifie) l'évaluation
+     */
+    public static function saveEvaluation($idUser, $idEntreprise, $note, $avis)
+    {
+        $db = Database::getInstance();
+        // Le ON DUPLICATE KEY permet de mettre à jour si l'évaluation existe déjà !
+        $sql = "INSERT INTO Evaluer (Id_Utilisateur, Id_ENTREPRISE, note, avis) 
+                VALUES (?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE note = VALUES(note), avis = VALUES(avis)";
+        $req = $db->prepare($sql);
+        return $req->execute([$idUser, $idEntreprise, $note, $avis]);
+    }
+
+    /**
+     * Supprime l'évaluation
+     */
+    public static function deleteEvaluation($idUser, $idEntreprise)
+    {
+        $db = Database::getInstance();
+        $req = $db->prepare("DELETE FROM Evaluer WHERE Id_Utilisateur = ? AND Id_ENTREPRISE = ?");
+        return $req->execute([$idUser, $idEntreprise]);
+    }
 }

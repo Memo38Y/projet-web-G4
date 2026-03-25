@@ -56,11 +56,55 @@ class EntrepriseController
             $mesFavorisIds = array_column($offresFavorites, 'Id_OFFRE');
         }
 
-        // 5. On envoie absolument toutes les données à la page Twig
+        // 5. NOUVEAU : On vérifie si l'utilisateur connecté (Pilote=2 ou Admin=3) a déjà évalué cette entreprise
+        $monEvaluation = null;
+        if (isset($_SESSION['user']) && in_array($_SESSION['user']['role'], [2, 3])) {
+            $monEvaluation = \App\Models\Entreprise::getEvaluation($_SESSION['user']['id'], $id);
+        }
+
+        // 6. On envoie absolument toutes les données à la page Twig
         echo $this->twig->render('entreprise_offres.html.twig', [
             'entreprise' => $entreprise,
             'offres' => $offres,
-            'mesFavorisIds' => $mesFavorisIds
+            'mesFavorisIds' => $mesFavorisIds,
+            'monEvaluation' => $monEvaluation // <- L'évaluation est envoyée à la vue !
         ]);
+    }
+
+    // NOUVELLE FONCTION : Gère l'ajout, la modification et la suppression de l'évaluation
+    public function gererEvaluation()
+    {
+        // Sécurité : Uniquement Pilotes (2) et Admins (3)
+        if (!isset($_SESSION['user']) || !in_array($_SESSION['user']['role'], [2, 3])) {
+            header('Location: /');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $idEntreprise = $_POST['id_entreprise'] ?? null;
+            $action = $_POST['action'] ?? '';
+            $idUser = $_SESSION['user']['id'];
+
+            if ($idEntreprise) {
+                // Si on ajoute ou modifie
+                if ($action === 'save') {
+                    $note = (int)($_POST['note'] ?? 0);
+                    $avis = trim($_POST['avis'] ?? '');
+                    
+                    if ($note >= 1 && $note <= 5) {
+                        \App\Models\Entreprise::saveEvaluation($idUser, $idEntreprise, $note, $avis);
+                    }
+                } 
+                // Si on supprime
+                elseif ($action === 'delete') {
+                    \App\Models\Entreprise::deleteEvaluation($idUser, $idEntreprise);
+                }
+                
+                // On redirige vers la page de l'entreprise d'où l'on vient
+                $redirectUrl = $_SERVER['HTTP_REFERER'] ?? '/entreprises';
+                header("Location: " . $redirectUrl);
+                exit;
+            }
+        }
     }
 }
