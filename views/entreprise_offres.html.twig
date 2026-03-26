@@ -1,147 +1,153 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Offres de
-	{{ entreprise.nom }}
-	- Web4All
-{% endblock %}
+{% block title %}Offres de {{ entreprise.nom }} - Web4All{% endblock %}
 
 {% block content %}
-	<section class="hero">
-		<h1>Les offres de
-			{{ entreprise.nom }}</h1>
-		<p>{{ entreprise.description }}</p>
+    <section class="hero">
+        <h1>Les offres de {{ entreprise.nom }}</h1>
+        <p>{{ entreprise.description }}</p>
 
-		{% if session.user and session.user.role in [2, 3] %}
-			<div style="margin-top: 30px; border-top: 2px solid #ffffff; padding-top: 20px; max-width: 600px;">
-				<h3 style="color: #d49a11;">⭐ Mon Évaluation</h3>
+        {% if session.user and session.user.role in [2, 3] %}
+            <div style="margin-top: 30px; border-top: 2px solid #ffffff; padding-top: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <h3 style="color: #d49a11;">⭐ Mon Évaluation</h3>
 
-				{% if monEvaluation %}
-					<div style="background: #2a6df4; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #81b6da;">
-						<p style="margin-bottom: 5px;">
-							<strong>Ma note :</strong>
-							{{ monEvaluation.note }}
-							/ 5</p>
-						<p style="margin-bottom: 15px; font-style: italic; color: #ffffff;">
-							"{{ monEvaluation.avis ? monEvaluation.avis : 'Aucun commentaire.' }}"
-						</p>
+                {% if monEvaluation %}
+                    <div style="background: #2a6df4; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #81b6da;">
+                        <p style="margin-bottom: 5px; color: white;">
+                            <strong>Ma note :</strong> {{ monEvaluation.note }} / 5
+                        </p>
+                        
+                        {% if monEvaluation.avis is defined %}
+                            <p style="margin-bottom: 15px; font-style: italic; color: #ffffff;">
+                                "{{ monEvaluation.avis ? monEvaluation.avis : 'Aucun commentaire.' }}"
+                            </p>
+                        {% endif %}
 
-						<div style="display: flex; gap: 10px;">
-							<button onclick="document.getElementById('form-eval').style.display='block'" style="background: #2a6df4; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;">Modifier</button>
-							<form action="/entreprise/evaluer" method="POST" style="margin: 0;">
-								<input type="hidden" name="action" value="delete">
-								<input type="hidden" name="id_entreprise" value="{{ entreprise.Id_ENTREPRISE }}">
-								<button type="submit" onclick="return confirm('Es-tu sûr de vouloir supprimer ton évaluation ?');" style="background: #dc3545; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;">Supprimer</button>
-							</form>
-						</div>
-					</div>
-				{% else %}
-					<button onclick="document.getElementById('form-eval').style.display='block'" style="background-color: #f4b41a; color: #1e2a3a; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 15px;">Évaluer cette entreprise</button>
-				{% endif %}
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <button onclick="document.getElementById('form-eval').style.display='block'" style="background: #ffffff; color: #2a6df4; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Modifier</button>
+                            <form action="/entreprise/evaluer" method="POST" style="margin: 0;">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id_entreprise" value="{{ entreprise.Id_ENTREPRISE }}">
+                                <button type="submit" onclick="return confirm('Es-tu sûr de vouloir supprimer ton évaluation ?');" style="background: #dc3545; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;">Supprimer</button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <button onclick="document.getElementById('form-eval').style.display='block'" style="background-color: #f4b41a; color: #1e2a3a; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 15px;">Évaluer cette entreprise</button>
+                {% endif %}
 
-				<div style="margin-top: 40px; border-top: 2px solid #eef2f9; padding-top: 20px; width: 100%;">
-					<h3 style="color: #1e2a3a; margin-bottom: 20px;">📊 Ce que pensent nos Pilotes/Administrateurs</h3>
+                <form id="form-eval" action="/entreprise/evaluer" method="POST" style="display: none; margin-top: 20px; background: #eef2f9; padding: 20px; border-radius: 8px; text-align: left;">
+                    <input type="hidden" name="action" value="save">
+                    <input type="hidden" name="id_entreprise" value="{{ entreprise.Id_ENTREPRISE }}">
 
-					{% if evaluationsEntreprise is not empty %}
-						<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
-							{% for eval in evaluationsEntreprise %}
-								<div style="background: white; border: 1px solid #dfe3ea; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center;">
-									<div style="display: flex; align-items: center; gap: 10px;">
-										<div style="background: #eef2f9; color: #2a6df4; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-											{{ eval.prenom|first | upper }}{{ eval.nom|first | upper }}
-										</div>
-										<span style="font-weight: 600; color: #1e2a3a;">{{ eval.prenom }}
-											{{ eval.nom }}</span>
-									</div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Note de confiance (sur 5) *</label>
+                        <select name="note" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; font-size: 1.1em; background: white;">
+                            <option value="5" {% if monEvaluation and monEvaluation.note == 5 %} selected {% endif %}>⭐⭐⭐⭐⭐ (5/5) - Excellente</option>
+                            <option value="4" {% if monEvaluation and monEvaluation.note == 4 %} selected {% endif %}>⭐⭐⭐⭐ (4/5) - Très bonne</option>
+                            <option value="3" {% if monEvaluation and monEvaluation.note == 3 %} selected {% endif %}>⭐⭐⭐ (3/5) - Correcte</option>
+                            <option value="2" {% if monEvaluation and monEvaluation.note == 2 %} selected {% endif %}>⭐⭐ (2/5) - Décevante</option>
+                            <option value="1" {% if monEvaluation and monEvaluation.note == 1 %} selected {% endif %}>⭐ (1/5) - À éviter</option>
+                        </select>
+                    </div>
 
-									<span style="background: #fdfaf6; color: #d49a11; padding: 5px 10px; border-radius: 20px; font-weight: bold; font-size: 0.9em; border: 1px solid #f9eac5;">
-										⭐
-										{{ eval.note }}
-										/ 5
-									</span>
-								</div>
-							{% endfor %}
-						</div>
-					{% else %}
-						<div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 1px dashed #ccc;">
-							<p style="color: #888; font-style: italic; margin: 0;">Cette entreprise n'a pas encore été évaluée par l'équipe pédagogique.</p>
-						</div>
-					{% endif %}
-				</div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Commentaire (Optionnel)</label>
+                        <textarea name="avis" rows="3" placeholder="Ex: Super accueil des étudiants..." style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; resize: vertical;">{{ monEvaluation.avis ?? '' }}</textarea>
+                    </div>
 
-				<form id="form-eval" action="/entreprise/evaluer" method="POST" style="display: none; margin-top: 20px; background: #eef2f9; padding: 20px; border-radius: 8px;">
-					<input type="hidden" name="action" value="save">
-					<input type="hidden" name="id_entreprise" value="{{ entreprise.Id_ENTREPRISE }}">
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Enregistrer ma note</button>
+                        <button type="button" onclick="document.getElementById('form-eval').style.display='none'" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
 
-					<div style="margin-bottom: 15px;">
-						<label style="font-weight: bold; display: block; margin-bottom: 5px;">Note de confiance (sur 5) *</label>
-						<select name="note" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; font-size: 1.1em; background: white;">
-							<option value="5" {% if monEvaluation and monEvaluation.note == 5 %} selected {% endif %}>⭐⭐⭐⭐⭐ (5/5) - Excellente</option>
-							<option value="4" {% if monEvaluation and monEvaluation.note == 4 %} selected {% endif %}>⭐⭐⭐⭐ (4/5) - Très bonne</option>
-							<option value="3" {% if monEvaluation and monEvaluation.note == 3 %} selected {% endif %}>⭐⭐⭐ (3/5) - Correcte</option>
-							<option value="2" {% if monEvaluation and monEvaluation.note == 2 %} selected {% endif %}>⭐⭐ (2/5) - Décevante</option>
-							<option value="1" {% if monEvaluation and monEvaluation.note == 1 %} selected {% endif %}>⭐ (1/5) - À éviter</option>
-						</select>
-					</div>
+        <div style="margin-top: 40px; border-top: 2px solid #eef2f9; padding-top: 20px; width: 100%; text-align: left;">
+            <h3 style="color: #1e2a3a; margin-bottom: 20px; text-align: center;">📊 Ce que pensent nos Pilotes/Administrateurs</h3>
 
-					<div style="margin-bottom: 15px;">
-						<label style="font-weight: bold; display: block; margin-bottom: 5px;">Commentaire (Optionnel)</label>
-						<textarea name="avis" rows="3" placeholder="Ex: Super accueil des étudiants..." style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; resize: vertical;">{{ monEvaluation ? monEvaluation.avis : '' }}</textarea>
-					</div>
+            {% if evaluationsEntreprise is not empty %}
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
+                    {% for eval in evaluationsEntreprise %}
+                        
+                        <div style="background: white; border: 1px solid #dfe3ea; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 15px;">
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="background: #eef2f9; color: #2a6df4; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                        {{ eval.prenom|first | upper }}{{ eval.nom|first | upper }}
+                                    </div>
+                                    <span style="font-weight: 600; color: #1e2a3a;">{{ eval.prenom }} {{ eval.nom }}</span>
+                                </div>
 
-					<div style="display: flex; gap: 10px;">
-						<button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Enregistrer ma note</button>
-						<button type="button" onclick="document.getElementById('form-eval').style.display='none'" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Annuler</button>
-					</div>
-				</form>
-			</div>
-		{% endif %}
+                                <span style="background: #fdfaf6; color: #d49a11; padding: 5px 10px; border-radius: 20px; font-weight: bold; font-size: 0.9em; border: 1px solid #f9eac5;">
+                                    ⭐ {{ eval.note }} / 5
+                                </span>
+                            </div>
 
-		<div class="search-box">
-			<input type="text" id="offre-search" placeholder="Rechercher une offre chez {{ entreprise.nom }}...">
-			<button>Rechercher</button>
-		</div>
-	</section>
+                            {% if eval.avis %}
+                                <div style="border-top: 1px solid #f0f5fa; padding-top: 10px;">
+                                    <p style="margin: 0; color: #555; font-style: italic; font-size: 0.95em; line-height: 1.4;">
+                                        "{{ eval.avis }}"
+                                    </p>
+                                </div>
+                            {% endif %}
 
-	<section class="jobs">
-		<h2>Postes actuellement ouverts</h2>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 1px dashed #ccc;">
+                    <p style="color: #888; font-style: italic; margin: 0;">Cette entreprise n'a pas encore été évaluée par l'équipe pédagogique.</p>
+                </div>
+            {% endif %}
+        </div>
 
-		{% if offres is not empty %}
-			{% for offre in offres %}
-				<div class="job-card">
-					<h3>{{ offre.titre }}</h3>
-					{% if session.user.role == 1 %}
+        <div class="search-box" style="margin-top: 40px;">
+            <input type="text" id="offre-search" placeholder="Rechercher une offre chez {{ entreprise.nom }}...">
+            <button>Rechercher</button>
+        </div>
+    </section>
 
-						{% if offre.Id_OFFRE in mesFavorisIds %}
-							{% set couleur_drapeau = '#2a6df4' %}
-						{% else %}
-							{% set couleur_drapeau = '#ccc' %}
-						{% endif %}
+    <section class="jobs">
+        <h2>Postes actuellement ouverts</h2>
 
-						<span class="favori-flag" data-id="{{ offre.Id_OFFRE }}" onclick="toggleFavori(this)" style="cursor: pointer; color: {{ couleur_drapeau }}; font-size: 24px; float: right; transition: 0.3s;">
-							⚑
-						</span>
+        {% if offres is not empty %}
+            {% for offre in offres %}
+                <div class="job-card">
+                    <h3>{{ offre.titre }}</h3>
+                    
+                    {% if session.user.role == 1 %}
+                        {% if offre.Id_OFFRE in mesFavorisIds %}
+                            {% set couleur_drapeau = '#2a6df4' %}
+                        {% else %}
+                            {% set couleur_drapeau = '#ccc' %}
+                        {% endif %}
 
-					{% endif %}
-					<p>{{ offre.description }}</p>
+                        <span class="favori-flag" data-id="{{ offre.Id_OFFRE }}" onclick="toggleFavori(this)" style="cursor: pointer; color: {{ couleur_drapeau }}; font-size: 24px; float: right; transition: 0.3s;">
+                            ⚑
+                        </span>
+                    {% endif %}
+                    
+                    <p>{{ offre.description }}</p>
 
-					<div class="job-details">
-						<span class="badge location">{{ offre.lieu }}</span>
-						<span class="badge contract">{{ offre.base_remuneration }}
-							€ / mois</span>
-					</div>
+                    <div class="job-details">
+                        <span class="badge location">{{ offre.lieu }}</span>
+                        <span class="badge contract">{{ offre.base_remuneration }} € / mois</span>
+                    </div>
 
-					<a href="/offre?id={{ offre.Id_OFFRE }}">
-						<button style="margin-top: 15px;">Voir les détails de l'offre</button>
-					</a>
-				</div>
-			{% endfor %}
-		{% else %}
-			<div style="background: #f5f7fb; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px;">
-				<p style="color: #555; font-size: 1.1em;">
-					<em>{{ entreprise.nom }}
-						n'a pas encore publié d'offres de stage.</em>
-				</p>
-			</div>
-		{% endif %}
-	</section>
+                    <a href="/offre?id={{ offre.Id_OFFRE }}">
+                        <button style="margin-top: 15px;">Voir les détails de l'offre</button>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div style="background: #f5f7fb; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px;">
+                <p style="color: #555; font-size: 1.1em;">
+                    <em>{{ entreprise.nom }} n'a pas encore publié d'offres de stage.</em>
+                </p>
+            </div>
+        {% endif %}
+    </section>
 {% endblock %}

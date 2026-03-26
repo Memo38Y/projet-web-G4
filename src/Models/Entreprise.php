@@ -119,7 +119,7 @@ class Entreprise
     public static function getEvaluationsByEntreprise($idEntreprise)
     {
         $db = Database::getInstance();
-        $sql = "SELECT Evaluer.note, Utilisateur.prenom, Utilisateur.nom 
+        $sql = "SELECT Evaluer.note, Evaluer.avis, Utilisateur.prenom, Utilisateur.nom 
                 FROM Evaluer 
                 JOIN Utilisateur ON Evaluer.Id_Utilisateur = Utilisateur.Id_Utilisateur 
                 WHERE Evaluer.Id_ENTREPRISE = ? 
