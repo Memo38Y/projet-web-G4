@@ -13,65 +13,98 @@
         </div>
     </section>
 
-    <section class="statistics" style="margin: 40px auto; max-width: 900px; text-align: center; position: relative;">
+    <section class="statistics" style="margin: 40px auto; max-width: 900px; text-align: center; overflow: hidden;">
         <h2 style="color: #1e2a3a; margin-bottom: 20px;">📊 Le marché en temps réel</h2>
         
-        <button id="btn-prev" style="position: absolute; left: -20px; top: 55%; transform: translateY(-50%); background: #2a6df4; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2em; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">❮</button>
-        <button id="btn-next" style="position: absolute; right: -20px; top: 55%; transform: translateY(-50%); background: #2a6df4; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2em; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">❯</button>
+        <div class="slider-container" style="position: relative; width: 100%; overflow: hidden; padding: 10px 0;">
+            <div class="slider-track">
+                
+                <div class="slide-card">
+                    <div style="font-size: 2.5em; margin-bottom: 10px;">💼</div>
+                    <h3 style="color: #2a6df4; font-size: 2.2em; margin: 0;">{{ stats.total_offres }}</h3>
+                    <p style="color: #555; margin-top: 10px; font-weight: 600;">Offres en base</p>
+                </div>
 
-        <div id="stats-track" style="display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px 5px; scrollbar-width: none; -ms-overflow-style: none;">
-            
-            <div style="min-width: 250px; flex: 0 0 auto; scroll-snap-align: center; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef2f9;">
-                <div style="font-size: 2.5em; margin-bottom: 10px;">💼</div>
-                <h3 style="color: #2a6df4; font-size: 2.2em; margin: 0;">{{ stats.total_offres }}</h3>
-                <p style="color: #555; margin-top: 10px; font-weight: 600;">Offres en base</p>
+                <div class="slide-card">
+                    <div style="font-size: 2.5em; margin-bottom: 10px;">⏱️</div>
+                    <h3 style="color: #ff6b35; font-size: 1.5em; margin: 0;">Répartition</h3>
+                    <p style="color: #555; margin-top: 10px; font-weight: 600; font-size: 0.9em;">{{ stats.repartition }}</p>
+                </div>
+
+                <div class="slide-card">
+                    <div style="font-size: 2.5em; margin-bottom: 10px;">🏆</div>
+                    <h3 style="color: #d49a11; font-size: 1.5em; margin: 0;">Top Favoris</h3>
+                    <p style="color: #555; margin-top: 10px; font-weight: 600; font-size: 0.9em; line-height: 1.4;">{{ stats.top_wishlist }}</p>
+                </div>
+
+                <div class="slide-card">
+                    <div style="font-size: 2.5em; margin-bottom: 10px;">📈</div>
+                    <h3 style="color: #28a745; font-size: 2.2em; margin: 0;">{{ stats.moyenne_candidatures }}</h3>
+                    <p style="color: #555; margin-top: 10px; font-weight: 600;">Candidatures / Offre</p>
+                </div>
+
+                <div class="slide-card">
+                    <div style="font-size: 2.5em; margin-bottom: 10px;">💼</div>
+                    <h3 style="color: #2a6df4; font-size: 2.2em; margin: 0;">{{ stats.total_offres }}</h3>
+                    <p style="color: #555; margin-top: 10px; font-weight: 600;">Offres en base</p>
+                </div>
+
+                <div class="slide-card">
+                    <div style="font-size: 2.5em; margin-bottom: 10px;">⏱️</div>
+                    <h3 style="color: #ff6b35; font-size: 1.5em; margin: 0;">Répartition</h3>
+                    <p style="color: #555; margin-top: 10px; font-weight: 600; font-size: 0.9em;">{{ stats.repartition }}</p>
+                </div>
+
+                <div class="slide-card">
+                    <div style="font-size: 2.5em; margin-bottom: 10px;">🏆</div>
+                    <h3 style="color: #d49a11; font-size: 1.5em; margin: 0;">Top Favoris</h3>
+                    <p style="color: #555; margin-top: 10px; font-weight: 600; font-size: 0.9em; line-height: 1.4;">{{ stats.top_wishlist }}</p>
+                </div>
+
+                <div class="slide-card">
+                    <div style="font-size: 2.5em; margin-bottom: 10px;">📈</div>
+                    <h3 style="color: #28a745; font-size: 2.2em; margin: 0;">{{ stats.moyenne_candidatures }}</h3>
+                    <p style="color: #555; margin-top: 10px; font-weight: 600;">Candidatures / Offre</p>
+                </div>
+
             </div>
-
-            <div style="min-width: 250px; flex: 0 0 auto; scroll-snap-align: center; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef2f9;">
-                <div style="font-size: 2.5em; margin-bottom: 10px;">⏱️</div>
-                <h3 style="color: #ff6b35; font-size: 1.5em; margin: 0;">Répartition</h3>
-                <p style="color: #555; margin-top: 10px; font-weight: 600; font-size: 0.9em;">
-                    {{ stats.repartition }}
-                </p>
-            </div>
-
-            <div style="min-width: 250px; flex: 0 0 auto; scroll-snap-align: center; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef2f9;">
-                <div style="font-size: 2.5em; margin-bottom: 10px;">🏆</div>
-                <h3 style="color: #d49a11; font-size: 1.5em; margin: 0;">Top Favoris</h3>
-                <p style="color: #555; margin-top: 10px; font-weight: 600; font-size: 0.9em; line-height: 1.4;">
-                    {{ stats.top_wishlist }}
-                </p>
-            </div>
-
-            <div style="min-width: 250px; flex: 0 0 auto; scroll-snap-align: center; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef2f9;">
-                <div style="font-size: 2.5em; margin-bottom: 10px;">📈</div>
-                <h3 style="color: #28a745; font-size: 2.2em; margin: 0;">{{ stats.moyenne_candidatures }}</h3>
-                <p style="color: #555; margin-top: 10px; font-weight: 600;">Candidatures / Offre</p>
-            </div>
-
         </div>
     </section>
 
     <style>
-        #stats-track::-webkit-scrollbar { display: none; }
+        .slider-track {
+            display: flex;
+            gap: 20px;
+            /* La piste fait 2 fois la taille nécessaire pour accueillir les originaux + les clones */
+            width: calc((250px + 20px) * 8); 
+            animation: scroll 15s linear infinite;
+        }
+
+        /* Pause le défilement si l'utilisateur met sa souris dessus ! */
+        .slider-track:hover {
+            animation-play-state: paused;
+        }
+
+        .slide-card {
+            width: 250px;
+            flex: 0 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #eef2f9;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                /* On se décale vers la gauche exactement de la taille des 4 premières cartes */
+                transform: translateX(calc(-270px * 4));
+            }
+        }
     </style>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const track = document.getElementById('stats-track');
-            const btnNext = document.getElementById('btn-next');
-            const btnPrev = document.getElementById('btn-prev');
-            const scrollAmount = 270; // Largeur de défilement (1 carte + l'écart)
-
-            btnNext.addEventListener('click', () => {
-                track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            });
-
-            btnPrev.addEventListener('click', () => {
-                track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            });
-        });
-    </script>
     <section class="categories">
         <h2>Catégories populaires</h2>
         <div class="grid">
@@ -81,10 +114,11 @@
         </div>
     </section>
 
-    <section class="jobs">
-        <h2>Dernières offres</h2>
+    <section class="jobs" style="margin-top: 40px;">
+        <h2>Toutes nos offres</h2>
+        <p style="text-align: center; color: #555; margin-bottom: 30px;">Fais défiler vers le bas pour découvrir toutes nos opportunités ! 👇</p>
         
-        {% for offre in dernieresOffres %}
+        {% for offre in offres %}
             <div class="job-card">
                 <h3>{{ offre.titre }}</h3>
                 
@@ -112,7 +146,9 @@
                 </a>
             </div>
         {% else %}
-            <p style="text-align:center;">Aucune offre disponible pour le moment.</p>
+            <div style="background: #f5f7fb; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px;">
+                <p style="color: #555; font-size: 1.1em;">Aucune offre n'est disponible pour le moment.</p>
+            </div>
         {% endfor %}
     </section>
 {% endblock %}
