@@ -93,10 +93,9 @@ class EntrepriseController
                 // Si on ajoute ou modifie
                 if ($action === 'save') {
                     $note = (int)($_POST['note'] ?? 0);
-                    $avis = trim($_POST['avis'] ?? '');
                     
                     if ($note >= 1 && $note <= 5) {
-                        \App\Models\Entreprise::saveEvaluation($idUser, $idEntreprise, $note, $avis);
+                        \App\Models\Entreprise::saveEvaluation($idUser, $idEntreprise, $note);
                     }
                 } 
                 // Si on supprime

@@ -74,15 +74,15 @@ class Entreprise
     /**
      * Sauvegarde (ajoute ou modifie) l'évaluation
      */
-    public static function saveEvaluation($idUser, $idEntreprise, $note, $avis)
+    public static function saveEvaluation($idUser, $idEntreprise, $note)
     {
         $db = Database::getInstance();
         // Le ON DUPLICATE KEY permet de mettre à jour si l'évaluation existe déjà !
-        $sql = "INSERT INTO Evaluer (Id_Utilisateur, Id_ENTREPRISE, note, avis) 
-                VALUES (?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE note = VALUES(note), avis = VALUES(avis)";
+        $sql = "INSERT INTO Evaluer (Id_Utilisateur, Id_ENTREPRISE, note) 
+                VALUES (?, ?, ?)
+                ON DUPLICATE KEY UPDATE note = VALUES(note)";
         $req = $db->prepare($sql);
-        return $req->execute([$idUser, $idEntreprise, $note, $avis]);
+        return $req->execute([$idUser, $idEntreprise, $note]);
     }
 
     /**
@@ -119,7 +119,7 @@ class Entreprise
     public static function getEvaluationsByEntreprise($idEntreprise)
     {
         $db = Database::getInstance();
-        $sql = "SELECT Evaluer.note, Evaluer.avis, Utilisateur.prenom, Utilisateur.nom 
+        $sql = "SELECT Evaluer.note, Utilisateur.prenom, Utilisateur.nom 
                 FROM Evaluer 
                 JOIN Utilisateur ON Evaluer.Id_Utilisateur = Utilisateur.Id_Utilisateur 
                 WHERE Evaluer.Id_ENTREPRISE = ? 

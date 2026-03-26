@@ -16,12 +16,6 @@
                         <p style="margin-bottom: 5px; color: white;">
                             <strong>Ma note :</strong> {{ monEvaluation.note }} / 5
                         </p>
-                        
-                        {% if monEvaluation.avis is defined %}
-                            <p style="margin-bottom: 15px; font-style: italic; color: #ffffff;">
-                                "{{ monEvaluation.avis ? monEvaluation.avis : 'Aucun commentaire.' }}"
-                            </p>
-                        {% endif %}
 
                         <div style="display: flex; gap: 10px; justify-content: center;">
                             <button onclick="document.getElementById('form-eval').style.display='block'" style="background: #ffffff; color: #2a6df4; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Modifier</button>
@@ -51,11 +45,6 @@
                         </select>
                     </div>
 
-                    <div style="margin-bottom: 15px;">
-                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Commentaire (Optionnel)</label>
-                        <textarea name="avis" rows="3" placeholder="Ex: Super accueil des étudiants..." style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; resize: vertical;">{{ monEvaluation.avis ?? '' }}</textarea>
-                    </div>
-
                     <div style="display: flex; gap: 10px;">
                         <button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Enregistrer ma note</button>
                         <button type="button" onclick="document.getElementById('form-eval').style.display='none'" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Annuler</button>
@@ -68,36 +57,28 @@
             <h3 style="color: #1e2a3a; margin-bottom: 20px; text-align: center;">📊 Ce que pensent nos Pilotes/Administrateurs</h3>
 
             {% if evaluationsEntreprise is not empty %}
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
-                    {% for eval in evaluationsEntreprise %}
-                        
-                        <div style="background: white; border: 1px solid #dfe3ea; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 15px;">
-                            
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div style="background: #eef2f9; color: #2a6df4; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                                        {{ eval.prenom|first | upper }}{{ eval.nom|first | upper }}
-                                    </div>
-                                    <span style="font-weight: 600; color: #1e2a3a;">{{ eval.prenom }} {{ eval.nom }}</span>
-                                </div>
+    			{# 1. On extrait uniquement les notes dans un tableau #}
+    			{% set notes = evaluationsEntreprise|map(e => e.note) %}
+    
+    			{# 2. On calcule la somme et on divise par le nombre d'entrées #}
+    			{% set moyenne = notes|reduce((total, n) => total + n) / notes|length %}
 
-                                <span style="background: #fdfaf6; color: #d49a11; padding: 5px 10px; border-radius: 20px; font-weight: bold; font-size: 0.9em; border: 1px solid #f9eac5;">
-                                    ⭐ {{ eval.note }} / 5
-                                </span>
-                            </div>
-
-                            {% if eval.avis %}
-                                <div style="border-top: 1px solid #f0f5fa; padding-top: 10px;">
-                                    <p style="margin: 0; color: #555; font-style: italic; font-size: 0.95em; line-height: 1.4;">
-                                        "{{ eval.avis }}"
-                                    </p>
-                                </div>
-                            {% endif %}
-
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
+    			<div style="background: white; border: 1px solid #dfe3ea; padding: 20px; border-radius: 12px; text-align: center; max-width: 200px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        			<h3 style="margin: 0; color: #1e2a3a; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;">Moyenne</h3>
+        			<div style="font-size: 2.5em; font-weight: bold; color: #2a6df4; margin: 10px 0;">
+            			{{ moyenne|number_format(1, ',', ' ') }} <span style="font-size: 0.5em; color: #7f8c8d;">/ 5</span>
+        			</div>
+        			<div style="color: #f1c40f; font-size: 1.2em;">
+            			{# Petit bonus : affichage visuel des étoiles selon la moyenne #}
+            			{% for i in 1..5 %}
+                			{{ i <= moyenne ? '★' : '☆' }}
+            			{% endfor %}
+        			</div>
+        			<p style="margin-top: 10px; font-size: 0.8em; color: #7f8c8d;">
+            			Basée sur {{ evaluationsEntreprise|length }} avis
+        			</p>
+    			</div>
+			{% else %}
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 1px dashed #ccc;">
                     <p style="color: #888; font-style: italic; margin: 0;">Cette entreprise n'a pas encore été évaluée par l'équipe pédagogique.</p>
                 </div>
