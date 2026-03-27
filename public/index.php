@@ -104,6 +104,10 @@ switch ($uri) {
         $candidatureController->delete();
         break;
 
+    case '/mentions-legales':
+        echo $twig->render('mentions_legales.html.twig');
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);
