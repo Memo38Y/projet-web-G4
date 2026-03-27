@@ -94,6 +94,11 @@ switch ($uri) {
         $entrepriseController->gererEvaluation();
         break;
 
+    case '/postuler':
+        $candidatureController = new \App\Controllers\CandidatureController($twig);
+        $candidatureController->submit();
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);
