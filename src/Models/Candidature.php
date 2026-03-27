@@ -64,4 +64,18 @@ class Candidature
         $req = $db->prepare($sql);
         return $req->execute([$student_id, $offre_id]);
     }
+
+    /**
+     * Vérifie si un étudiant a déjà postulé à une offre spécifique
+     */
+    public static function hasApplied($student_id, $offre_id) 
+    {
+        $db = \App\Core\Database::getInstance();
+        $sql = "SELECT 1 FROM Postuler WHERE Id_Utilisateur = ? AND Id_OFFRE = ?";
+        $req = $db->prepare($sql);
+        $req->execute([$student_id, $offre_id]);
+        
+        // S'il trouve une ligne, ça renvoie true, sinon false
+        return $req->fetch() !== false;
+    }
 }

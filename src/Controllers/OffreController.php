@@ -40,10 +40,19 @@ class OffreController
             $estFavori = in_array($id, $mesFavorisIds); 
         }
 
+        // 1. On vérifie si l'étudiant a déjà postulé (Faux par défaut)
+        $aDejaPostule = false;
+        
+        if (isset($_SESSION['user']) && $_SESSION['user']['role'] == 1) {
+            // On utilise notre nouvelle fonction !
+            $aDejaPostule = \App\Models\Candidature::hasApplied($_SESSION['user']['id'], $id); // ou $offre['Id_OFFRE'] selon ta variable
+        }
+
         // 4. On envoie tout à la vue Twig
         echo $this->twig->render('offre_detail.html.twig', [
             'offre' => $offre,
             'competences' => $competences,
+            'aDejaPostule' => $aDejaPostule,
             'estFavori' => $estFavori
         ]);
     }
