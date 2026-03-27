@@ -9,7 +9,7 @@
     </section>
 
     <section class="categories" style="display: flex; justify-content: center; padding: 40px 10%;">
-        <div class="job-card" style="width: 100%; max-width: 600px; text-align: left;">
+        <div class="job-card" style="width: 100%; max-width: 800px; text-align: left;">
             
             <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px;">Mes Informations</h3>
             <p><strong>Nom :</strong> {{ session.user.nom }}</p>
@@ -25,14 +25,46 @@
                 Rôle inconnu
             {% endif %}
             </p>
-            {% if session.user.role == 1 %}
-            <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 30px;">Mes Candidatures en cours</h3>
-    
-            <div style="background: #f5f7fb; padding: 15px; border-radius: 8px; margin-top: 15px;">
-                <p style="margin: 0; color: #555;"><em>Tu n'as pas encore postulé à une offre. Découvre vite nos entreprises partenaires !</em></p>
-            </div>
 
-                <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 30px;">Mes Offres Favorites</h3>
+            {% if session.user.role == 1 %}
+                
+                <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 40px;">🚀 Mes Candidatures en cours</h3>
+                
+                {% if candidatures is not empty %}
+                    <div style="display: grid; gap: 15px; margin-top: 20px;">
+                        {% for cand in candidatures %}
+                            <div style="background: white; border: 1px solid #dfe3ea; border-radius: 8px; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+                                
+                                <div style="flex: 1; min-width: 250px;">
+                                    <h4 style="margin: 0 0 8px 0; color: #1e2a3a; font-size: 1.2em;">{{ cand.titre }}</h4>
+                                    <p style="margin: 0 0 10px 0; color: #555; font-size: 0.95em;">
+                                        🏢 <strong>{{ cand.nom_entreprise }}</strong> | 📍 {{ cand.lieu }}
+                                    </p>
+                                    
+                                    <div style="display: flex; gap: 15px; font-size: 0.9em;">
+                                        <a href="{{ cand.cv_path }}" target="_blank" style="color: #ff6b35; text-decoration: none; font-weight: bold; background: #fff3ed; padding: 5px 10px; border-radius: 4px;">
+                                            📄 Voir le CV envoyé
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <a href="/offre?id={{ cand.Id_OFFRE }}" style="text-decoration: none;">
+                                    <button style="background: #2a6df4; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-size: 0.95em; cursor: pointer; font-weight: bold; transition: 0.2s;">
+                                        Revoir l'offre
+                                    </button>
+                                </a>
+                                
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div style="background: #f8f9fa; border: 1px dashed #ccc; border-radius: 8px; padding: 25px; text-align: center; margin-top: 15px;">
+                        <p style="color: #777; font-size: 1.1em; margin: 0;">Tu n'as pas encore envoyé de candidature.</p>
+                        <a href="/"><button style="margin-top: 15px; background: #f4b41a; color: #1e2a3a; font-weight: bold; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Explorer les offres</button></a>
+                    </div>
+                {% endif %}
+
+                <h3 style="color: #2a6df4; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 40px;">⭐ Mes Offres Favorites</h3>
                 
                 {% if favoris is not empty %}
                     <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
@@ -56,7 +88,8 @@
             {% endif %}
 
             {% if session.user.role in [2, 3] %}
-                <h3 style="color: #d49a11; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 30px;">⭐ Mes Évaluations d'Entreprises</h3>
+                
+                <h3 style="color: #d49a11; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 40px;">⭐ Mes Évaluations d'Entreprises</h3>
                 
                 {% if mesEvaluations is not empty %}
                     <div style="display: grid; gap: 15px; margin-top: 20px;">
@@ -84,11 +117,8 @@
                         <p style="color: #777; font-style: italic; margin: 0;">Tu n'as pas encore évalué d'entreprise. Visite la page d'une entreprise pour y laisser ton premier avis !</p>
                     </div>
                 {% endif %}
-            {% endif %}
 
-            {% if session.user.role in [2, 3] %}
-                <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 30px;">⚙️ Panneau de Gestion</h3>
-                
+                <h3 style="color: #ff6b35; border-bottom: 2px solid #eef2f9; padding-bottom: 10px; margin-top: 40px;">⚙️ Panneau de Gestion</h3>
                 <p style="color: #555; margin-bottom: 15px;">Sélectionne la ressource que tu souhaites gérer :</p>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">

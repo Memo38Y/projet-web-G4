@@ -31,10 +31,21 @@ class ProfilController
             $mesEvaluations = \App\Models\Entreprise::getEvaluationsByUser($_SESSION['user']['id']);
         }
 
+        // On prépare un tableau vide par défaut pour éviter les erreurs 500
+        $candidatures = [];
+        
+        // Si c'est un étudiant (Rôle 1), on va chercher ses candidatures
+        if (isset($_SESSION['user']) && $_SESSION['user']['role'] == 1) {
+            $candidatures = \App\Models\Candidature::getByEtudiant($_SESSION['user']['id']);
+        }
+
         // On envoie la variable à Twig
         echo $this->twig->render('profil.html.twig', [
             'favoris' => $mesFavoris,
-            'mesEvaluations' => $mesEvaluations
+            'mesEvaluations' => $mesEvaluations,
+            'candidatures' => $candidatures
         ]);
+
+        
     }
 }

@@ -36,4 +36,21 @@ class Candidature
                 
         return $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    /**
+     * Récupère toutes les candidatures d'un étudiant spécifique
+     */
+    public static function getByEtudiant($idEtudiant) 
+    {
+        $db = Database::getInstance();
+        $sql = "SELECT Postuler.cv_path, Postuler.lm_path, OFFRE.Id_OFFRE, OFFRE.titre, OFFRE.lieu, ENTREPRISE.nom AS nom_entreprise 
+                FROM Postuler
+                JOIN OFFRE ON Postuler.Id_OFFRE = OFFRE.Id_OFFRE
+                JOIN ENTREPRISE ON OFFRE.Id_ENTREPRISE = ENTREPRISE.Id_ENTREPRISE
+                WHERE Postuler.Id_Utilisateur = ?";
+                
+        $req = $db->prepare($sql);
+        $req->execute([$idEtudiant]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
