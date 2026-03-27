@@ -48,11 +48,20 @@
                                     </div>
                                 </div>
                                 
-                                <a href="/offre?id={{ cand.Id_OFFRE }}" style="text-decoration: none;">
-                                    <button style="background: #2a6df4; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-size: 0.95em; cursor: pointer; font-weight: bold; transition: 0.2s;">
-                                        Revoir l'offre
-                                    </button>
-                                </a>
+                                <div style="display: flex; flex-direction: column; gap: 10px; min-width: 200px;">
+                                    <a href="/offre?id={{ cand.Id_OFFRE }}" style="text-decoration: none;">
+                                        <button style="width: 100%; background: #2a6df4; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-size: 0.95em; cursor: pointer; font-weight: bold; transition: 0.2s;">
+                                            Revoir l'offre
+                                        </button>
+                                    </a>
+                                    
+                                    <form action="/candidature/supprimer" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="id_offre" value="{{ cand.Id_OFFRE }}">
+                                        <button type="submit" onclick="return confirm('Es-tu sûr de vouloir annuler ta candidature pour cette offre ?');" style="width: 100%; background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-size: 0.95em; cursor: pointer; font-weight: bold; transition: 0.2s;">
+                                            Annuler ma candidature
+                                        </button>
+                                    </form>
+                                </div>
                                 
                             </div>
                         {% endfor %}

@@ -83,4 +83,30 @@ class CandidatureController
                  </div>");
         }
     }
+
+    /**
+     * Permet à un étudiant d'annuler et supprimer sa candidature
+     */
+    public function delete()
+    {
+        // Sécurité : Seul un Étudiant connecté peut faire ça
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 1) {
+            header('Location: /connexion');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $student_id = $_SESSION['user']['id'];
+            $offre_id = $_POST['id_offre'] ?? null;
+
+            if ($offre_id) {
+                // On appelle notre nouvelle fonction du modèle !
+                \App\Models\Candidature::delete($student_id, $offre_id);
+            }
+        }
+
+        // On le renvoie sur son profil une fois que c'est supprimé
+        header('Location: /profil');
+        exit;
+    }
 }

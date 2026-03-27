@@ -53,4 +53,15 @@ class Candidature
         $req->execute([$idEtudiant]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Supprime la candidature d'un étudiant pour une offre précise
+     */
+    public static function delete($student_id, $offre_id) 
+    {
+        $db = Database::getInstance();
+        $sql = "DELETE FROM Postuler WHERE Id_Utilisateur = ? AND Id_OFFRE = ?";
+        $req = $db->prepare($sql);
+        return $req->execute([$student_id, $offre_id]);
+    }
 }

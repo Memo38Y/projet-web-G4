@@ -99,6 +99,11 @@ switch ($uri) {
         $candidatureController->submit();
         break;
 
+    case '/candidature/supprimer':
+        $candidatureController = new \App\Controllers\CandidatureController($twig);
+        $candidatureController->delete();
+        break;
+
     default:
         // Si l'URL n'existe pas, on renvoie une 404
         http_response_code(404);
