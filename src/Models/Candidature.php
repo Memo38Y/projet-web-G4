@@ -78,4 +78,26 @@ class Candidature
         // S'il trouve une ligne, ça renvoie true, sinon false
         return $req->fetch() !== false;
     }
+
+    /**
+     * Récupère toutes les candidatures des étudiants rattachés à un pilote spécifique
+     */
+    public static function getByPilote($idPilote) 
+    {
+        $db = \App\Core\Database::getInstance();
+        $sql = "SELECT Postuler.cv_path, Postuler.lm_path, 
+                       OFFRE.Id_OFFRE, OFFRE.titre, 
+                       ENTREPRISE.nom AS nom_entreprise,
+                       Utilisateur.Id_Utilisateur, Utilisateur.nom AS nom_etudiant, Utilisateur.prenom AS prenom_etudiant
+                FROM Postuler
+                JOIN OFFRE ON Postuler.Id_OFFRE = OFFRE.Id_OFFRE
+                JOIN ENTREPRISE ON OFFRE.Id_ENTREPRISE = ENTREPRISE.Id_ENTREPRISE
+                JOIN Utilisateur ON Postuler.Id_Utilisateur = Utilisateur.Id_Utilisateur
+                WHERE Utilisateur.Id_pilote = ?
+                ORDER BY Utilisateur.nom ASC, Utilisateur.prenom ASC";
+                
+        $req = $db->prepare($sql);
+        $req->execute([$idPilote]);
+        return $req->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

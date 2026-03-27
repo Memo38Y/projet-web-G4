@@ -473,9 +473,15 @@ class AdminController
             // On récupère UNIQUEMENT les étudiants de ce pilote
             $mesEtudiants = \App\Models\Utilisateur::getEtudiantsByPilote($monIdPilote);
 
+            $candidaturesPromo = [];
+            if (isset($_SESSION['user'])) {
+                $candidaturesPromo = \App\Models\Candidature::getByPilote($_SESSION['user']['id']);
+            }
+
             echo $this->twig->render('pilote_etudiants.html.twig', [
                 'etudiants' => $mesEtudiants,
-                'message' => $message
+                'message' => $message,
+                'candidaturesPromo' => $candidaturesPromo
             ]);
 
         } catch (\Throwable $e) {
