@@ -96,14 +96,22 @@ class Offre
     }
 
     /**
-     * Supprime une offre
+     * Supprime une offre ET nettoie tout ce qui lui est lié en cascade
      */
     public static function delete($id)
     {
-        $db = Database::getInstance();
-        // Optionnel : on supprime d'abord les favoris liés à cette offre pour éviter une erreur de clé étrangère
+        $db = \App\Core\Database::getInstance();
+        
+        // 1. On supprime toutes les candidatures liées à cette offre
+        $db->prepare("DELETE FROM Postuler WHERE Id_OFFRE = ?")->execute([$id]);
+        
+        // 2. On supprime tous les favoris liés à cette offre
         $db->prepare("DELETE FROM Mettre_Favori WHERE Id_OFFRE = ?")->execute([$id]);
         
+        // 3. On détache toutes les compétences requises pour cette offre (LE COUPABLE ÉTAIT ICI !)
+        $db->prepare("DELETE FROM Requerir WHERE Id_OFFRE = ?")->execute([$id]);
+        
+        // 4. L'offre est enfin isolée, on peut la supprimer de la table principale !
         $req = $db->prepare("DELETE FROM OFFRE WHERE Id_OFFRE = ?");
         return $req->execute([$id]);
     }

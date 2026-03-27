@@ -51,11 +51,26 @@ class Entreprise
     }
 
     /**
-     * Supprime une entreprise
+     * Supprime une entreprise ET toutes ses offres en cascade
      */
     public static function delete($id)
     {
-        $db = Database::getInstance();
+        $db = \App\Core\Database::getInstance();
+        
+        // 1. On récupère toutes les offres de cette entreprise
+        $reqOffres = $db->prepare("SELECT Id_OFFRE FROM OFFRE WHERE Id_ENTREPRISE = ?");
+        $reqOffres->execute([$id]);
+        $offres = $reqOffres->fetchAll(\PDO::FETCH_ASSOC);
+        
+        // 2. On supprime chaque offre proprement (ce qui nettoiera aussi Requerir, Postuler et Mettre_Favori)
+        foreach ($offres as $offre) {
+            \App\Models\Offre::delete($offre['Id_OFFRE']);
+        }
+        
+        // 3. On supprime les notes données par les pilotes à cette entreprise
+        $db->prepare("DELETE FROM Evaluer WHERE Id_ENTREPRISE = ?")->execute([$id]);
+        
+        // 4. L'entreprise est complètement vidée, on la supprime !
         $req = $db->prepare("DELETE FROM ENTREPRISE WHERE Id_ENTREPRISE = ?");
         return $req->execute([$id]);
     }
