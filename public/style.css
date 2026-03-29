@@ -4,11 +4,22 @@ padding:0;
 box-sizing:border-box;
 }
 
+/* BASE */
+
 body{
-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-background:#f4f6fb;
+font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+background:
+linear-gradient(180deg,#f4f6fb 0%,#eef2f9 100%),
+url("https://www.transparenttextures.com/patterns/cubes.png");
 color:#1e2a3a;
 line-height:1.6;
+}
+
+/* TITRES */
+
+h1,h2,h3{
+font-family:'Poppins', sans-serif;
+letter-spacing:-0.5px;
 }
 
 /* NAVBAR */
@@ -18,8 +29,8 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 padding:18px 8%;
-background:rgba(255,255,255,0.9);
-backdrop-filter:blur(10px);
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(12px);
 position:sticky;
 top:0;
 z-index:100;
@@ -30,7 +41,7 @@ border-bottom:1px solid #e6eaf2;
 font-size:26px;
 font-weight:700;
 color:#2a6df4;
-letter-spacing:-0.5px;
+font-family:'Poppins', sans-serif;
 }
 
 nav ul{
@@ -66,27 +77,48 @@ nav a:hover::after{
 width:100%;
 }
 
-
 /* HERO */
 
 .hero{
+position:relative;
 text-align:center;
 padding:100px 20px;
 background:linear-gradient(135deg,#2a6df4,#4ea1ff);
 color:white;
+overflow:hidden;
+}
+
+.hero::before{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:url("https://www.transparenttextures.com/patterns/diagmonds.png");
+opacity:0.15;
+}
+
+.hero::after{
+content:"";
+position:absolute;
+width:600px;
+height:600px;
+background:radial-gradient(circle, rgba(255,255,255,0.2), transparent);
+top:-200px;
+left:-200px;
+filter:blur(80px);
 }
 
 .hero h1{
 font-size:48px;
-font-weight:700;
 margin-bottom:15px;
-letter-spacing:-1px;
 }
 
 .hero p{
-opacity:0.9;
 font-size:18px;
+opacity:0.9;
 }
+
+/* SEARCH */
 
 .search-box{
 margin-top:40px;
@@ -104,6 +136,7 @@ border-radius:8px;
 box-shadow:0 4px 10px rgba(0,0,0,0.1);
 outline:none;
 transition:0.2s;
+font-family:'Inter', sans-serif;
 }
 
 .search-box input:focus{
@@ -119,29 +152,71 @@ background:#ff6b35;
 color:white;
 font-weight:600;
 cursor:pointer;
-transition:0.3s;
 box-shadow:0 5px 15px rgba(255,107,53,0.4);
 }
 
-.search-box button:hover{
-background:#e85a28;
-transform:translateY(-2px);
+/* BUTTON EFFECT */
+
+button{
+position:relative;
+overflow:hidden;
+transition:0.3s;
+font-family:'Inter', sans-serif;
 }
 
+button::after{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
+transition:0.5s;
+}
 
-/* CATEGORIES */
+button:hover::after{
+left:100%;
+}
+
+/* BLOCS */
 
 .categories{
 padding:80px 8%;
+margin:60px 8%;
+background:white;
+border-radius:20px;
+box-shadow:0 20px 50px rgba(0,0,0,0.08);
+border:1px solid #e6eaf2;
 text-align:center;
+position:relative;
+overflow:hidden;
+}
+
+.categories::before{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:url("https://www.transparenttextures.com/patterns/graphy.png");
+opacity:0.05;
 }
 
 .categories h2{
-font-size:30px;
-color:#2a6df4;
 margin-bottom:50px;
-font-weight:700;
 }
+
+.categories h2::after{
+content:"";
+display:block;
+width:60px;
+height:4px;
+background:#2a6df4;
+margin:10px auto 0;
+border-radius:2px;
+}
+
+/* GRID */
 
 .grid{
 display:grid;
@@ -149,34 +224,36 @@ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:25px;
 }
 
+/* CATEGORY */
+
 .category{
 background:white;
 padding:35px;
 border-radius:16px;
-box-shadow:0 10px 30px rgba(0,0,0,0.05);
-cursor:pointer;
-font-size:18px;
-font-weight:600;
-transition:all 0.3s ease;
 position:relative;
 overflow:hidden;
+cursor:pointer;
+
+background-image:url("https://www.transparenttextures.com/patterns/subtle-dots.png");
+
+transition:0.3s;
 }
 
 .category::before{
 content:"";
 position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:linear-gradient(120deg,#2a6df4,#4ea1ff);
+width:200%;
+height:200%;
+background:linear-gradient(120deg,#2a6df4,#4ea1ff,#6ecbff);
+top:-50%;
+left:-50%;
 opacity:0;
-transition:0.3s;
-z-index:0;
+transition:0.5s;
 }
 
 .category:hover::before{
-opacity:1;
+opacity:0.2;
+transform:rotate(10deg);
 }
 
 .category:hover{
@@ -188,43 +265,70 @@ box-shadow:0 20px 40px rgba(0,0,0,0.15);
 .category span{
 position:relative;
 z-index:1;
+font-weight:600;
 }
-
 
 /* JOBS */
 
 .jobs{
 padding:80px 8%;
-background:#eef2f9;
+margin:60px 8%;
+background:white;
+border-radius:20px;
+box-shadow:0 20px 50px rgba(0,0,0,0.08);
+border:1px solid #e6eaf2;
+position:relative;
+overflow:hidden;
+}
+
+.jobs::before{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+opacity:0.05;
 }
 
 .jobs h2{
 text-align:center;
 margin-bottom:50px;
-font-size:28px;
 }
 
+.jobs h2::after{
+content:"";
+display:block;
+width:60px;
+height:4px;
+background:#2a6df4;
+margin:10px auto 0;
+border-radius:2px;
+}
+
+/* JOB CARD */
+
 .job-card{
-background:white;
+background:rgba(255,255,255,0.9);
+backdrop-filter:blur(8px);
 padding:25px;
 margin-bottom:25px;
 border-radius:14px;
-border:1px solid #e3e7ef;
+border:1px solid rgba(255,255,255,0.4);
+
+background-image:url("https://www.transparenttextures.com/patterns/noise.png");
+
+box-shadow:0 10px 25px rgba(0,0,0,0.06);
 transition:all 0.3s ease;
-display:flex;
-flex-direction:column;
-gap:10px;
 }
 
 .job-card:hover{
 transform:translateY(-6px);
-box-shadow:0 15px 35px rgba(0,0,0,0.12);
+box-shadow:0 20px 40px rgba(0,0,0,0.12);
 border-color:#2a6df4;
 }
 
 .job-card h3{
 font-size:20px;
-font-weight:700;
 }
 
 .job-card p{
@@ -239,14 +343,14 @@ flex-wrap:wrap;
 margin-top:10px;
 }
 
+/* BADGES */
+
 .badge{
 padding:6px 14px;
 border-radius:30px;
 font-size:13px;
 font-weight:600;
 }
-
-/* BADGES */
 
 .location{
 background:#e8f0ff;
@@ -263,6 +367,8 @@ background:#fff2e6;
 color:#ff6b35;
 }
 
+/* BUTTON JOB */
+
 .job-card button{
 margin-top:10px;
 padding:12px 20px;
@@ -272,14 +378,12 @@ color:white;
 border-radius:6px;
 cursor:pointer;
 font-weight:600;
-transition:0.3s;
 }
 
 .job-card button:hover{
 background:#1a4fd8;
 transform:scale(1.05);
 }
-
 
 /* FOOTER */
 
