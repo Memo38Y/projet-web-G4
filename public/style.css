@@ -88,14 +88,6 @@ color:white;
 overflow:hidden;
 }
 
-.hero::before{
-content:"";
-position:absolute;
-width:100%;
-height:100%;
-background:url("https://www.transparenttextures.com/patterns/diagmonds.png");
-opacity:0.15;
-}
 
 .hero::after{
 content:"";
@@ -404,6 +396,6 @@ font-family:'Poppins', sans-serif;
 }
 
 .logo-container img{
-height: 80px; /* augmente ici */
+height: 100px; /* augmente ici */
 width:auto;
 }
