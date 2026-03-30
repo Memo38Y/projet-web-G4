@@ -1,9 +1,28 @@
 User-agent: *
-Disallow: /admin/
-Disallow: /profil
-Disallow: /pilote/
+
+# Pages d'authentification et profils privés
 Disallow: /connexion
-Disallow: /api/
+Disallow: /profil
+Disallow: /deconnexion
+
+# Tableaux de bord Administration
+Disallow: /admin/etudiants
+Disallow: /admin/pilotes
+Disallow: /admin/entreprises
+Disallow: /admin/offres
+Disallow: /admin/competences
+
+# Tableaux de bord Pilote
+Disallow: /pilote/etudiants
+
+# Actions spécifiques (On interdit aux robots de "cliquer" sur ces liens)
+Disallow: /api/favori/toggle
+Disallow: /entreprise/evaluer
+Disallow: /postuler
+Disallow: /candidature/supprimer
+
+# Indiquer l'emplacement du plan du site pour aider Google
+Sitemap: http://web4all.local/sitemap.xml
 
 Allow: /
 Allow: /entreprises
