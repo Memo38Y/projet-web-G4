@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /profil
+Disallow: /pilote/
+Disallow: /connexion
+Disallow: /api/
+
+Allow: /
+Allow: /entreprises
+Allow: /mentions-legales
