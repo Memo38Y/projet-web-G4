@@ -29,8 +29,8 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 padding:18px 8%;
-background:rgba(255,255,255,0.85);
-backdrop-filter:blur(12px);
+background:rgba(255,255,255,0.95);
+backdrop-filter:blur(8px);
 position:sticky;
 top:0;
 z-index:100;
@@ -40,7 +40,7 @@ border-bottom:1px solid #e6eaf2;
 .logo{
 font-size:26px;
 font-weight:700;
-color:#2a6df4;
+color:#3B4CC0;
 font-family:'Poppins', sans-serif;
 }
 
@@ -65,12 +65,12 @@ width:0%;
 height:2px;
 bottom:-5px;
 left:0;
-background:#2a6df4;
+background:#3B4CC0;
 transition:0.3s;
 }
 
 nav a:hover{
-color:#2a6df4;
+color:#3B4CC0;
 }
 
 nav a:hover::after{
@@ -83,7 +83,7 @@ width:100%;
 position:relative;
 text-align:center;
 padding:100px 20px;
-background:linear-gradient(135deg,#2a6df4,#4ea1ff);
+background:linear-gradient(135deg,#3B4CC0,#5A6BFF);
 color:white;
 overflow:hidden;
 }
@@ -211,7 +211,7 @@ content:"";
 display:block;
 width:60px;
 height:4px;
-background:#2a6df4;
+background:#3B4CC0;
 margin:10px auto 0;
 border-radius:2px;
 }
@@ -233,9 +233,7 @@ border-radius:16px;
 position:relative;
 overflow:hidden;
 cursor:pointer;
-
 background-image:url("https://www.transparenttextures.com/patterns/subtle-dots.png");
-
 transition:0.3s;
 }
 
@@ -244,7 +242,7 @@ content:"";
 position:absolute;
 width:200%;
 height:200%;
-background:linear-gradient(120deg,#2a6df4,#4ea1ff,#6ecbff);
+background:linear-gradient(120deg,#3B4CC0,#5A6BFF,#8FA4FF);
 top:-50%;
 left:-50%;
 opacity:0;
@@ -300,7 +298,7 @@ content:"";
 display:block;
 width:60px;
 height:4px;
-background:#2a6df4;
+background:#3B4CC0;
 margin:10px auto 0;
 border-radius:2px;
 }
@@ -314,9 +312,7 @@ padding:25px;
 margin-bottom:25px;
 border-radius:14px;
 border:1px solid rgba(255,255,255,0.4);
-
 background-image:url("https://www.transparenttextures.com/patterns/noise.png");
-
 box-shadow:0 10px 25px rgba(0,0,0,0.06);
 transition:all 0.3s ease;
 }
@@ -324,7 +320,7 @@ transition:all 0.3s ease;
 .job-card:hover{
 transform:translateY(-6px);
 box-shadow:0 20px 40px rgba(0,0,0,0.12);
-border-color:#2a6df4;
+border-color:#3B4CC0;
 }
 
 .job-card h3{
@@ -353,8 +349,8 @@ font-weight:600;
 }
 
 .location{
-background:#e8f0ff;
-color:#2a6df4;
+background:#e8ecff;
+color:#3B4CC0;
 }
 
 .contract{
@@ -372,7 +368,7 @@ color:#ff6b35;
 .job-card button{
 margin-top:10px;
 padding:12px 20px;
-background:#2a6df4;
+background:#3B4CC0;
 border:none;
 color:white;
 border-radius:6px;
@@ -381,7 +377,7 @@ font-weight:600;
 }
 
 .job-card button:hover{
-background:#1a4fd8;
+background:#2c3aa3;
 transform:scale(1.05);
 }
 
@@ -395,4 +391,19 @@ padding:40px;
 margin-top:60px;
 font-size:14px;
 opacity:0.9;
+}
+
+.logo-container{
+display:flex;
+align-items:center;
+gap:10px;
+font-weight:700;
+font-size:22px;
+color:#3B4CC0;
+font-family:'Poppins', sans-serif;
+}
+
+.logo-container img{
+height: 80px; /* augmente ici */
+width:auto;
 }
