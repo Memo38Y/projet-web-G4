@@ -38,8 +38,12 @@ class Utilisateur
     {
         $db = Database::getInstance();
         $req = $db->prepare("INSERT INTO Utilisateur (nom, prenom, email, mot_de_passe, Id_Role, Id_pilote) 
-                             VALUES (?, ?, ?, ?, 1, ?)");
-        return $req->execute([$nom, $prenom, $email, $mdp, $idPilote]);
+                         VALUES (?, ?, ?, ?, 1, ?)");
+                         
+        // On hache le mot de passe avant de l'exécuter
+        $mdpHash = password_hash($mdp, PASSWORD_DEFAULT);
+    
+        return $req->execute([$nom, $prenom, $email, $mdpHash, $idPilote]);
     }
 
     /**
@@ -63,6 +67,8 @@ class Utilisateur
         if (!empty($mdp)) {
             $sql = "UPDATE Utilisateur SET nom = ?, prenom = ?, email = ?, mot_de_passe = ?, Id_pilote = ? 
                     WHERE Id_Utilisateur = ? AND Id_Role = 1";
+
+            $mdpHash = password_hash($mdp, PASSWORD_DEFAULT);
             $params = [$nom, $prenom, $email, $mdp, $idPilote, $id];
         } else {
             // Sinon, on ne touche pas au mot de passe actuel
@@ -93,8 +99,11 @@ class Utilisateur
     {
         $db = Database::getInstance();
         $req = $db->prepare("INSERT INTO Utilisateur (nom, prenom, email, mot_de_passe, Id_Role, Id_pilote) 
-                             VALUES (?, ?, ?, ?, 2, NULL)");
-        return $req->execute([$nom, $prenom, $email, $mdp]);
+                         VALUES (?, ?, ?, ?, 2, NULL)");
+                         
+        $mdpHash = password_hash($mdp, PASSWORD_DEFAULT);
+    
+        return $req->execute([$nom, $prenom, $email, $mdpHash]);
     }
 
     /**
@@ -107,6 +116,7 @@ class Utilisateur
         if (!empty($mdp)) {
             $sql = "UPDATE Utilisateur SET nom = ?, prenom = ?, email = ?, mot_de_passe = ? 
                     WHERE Id_Utilisateur = ? AND Id_Role = 2";
+            $mdpHash = password_hash($mdp, PASSWORD_DEFAULT);
             $params = [$nom, $prenom, $email, $mdp, $id];
         } else {
             $sql = "UPDATE Utilisateur SET nom = ?, prenom = ?, email = ? 

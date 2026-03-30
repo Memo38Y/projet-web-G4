@@ -34,7 +34,7 @@ class AuthController
 
             // 2. On vérifie s'il existe ET si le mot de passe correspond
             // (Note : on compare en texte brut car on n'a pas encore crypté les mots de passe dans notre jeu d'essai)
-            if ($user && $user['mot_de_passe'] === $password) {
+            if ($user && password_verify($password, $user['mot_de_passe'])) {
                 
                 // 3. SUCCÈS ! On crée son "badge" de session
                 $_SESSION['user'] = [
