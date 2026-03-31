@@ -8,11 +8,11 @@
         <p>{{ entreprise.description }}</p>
 
         {% if session.user and session.user.role in [2, 3] %}
-            <div style="margin-top: 30px; border-top: 2px solid #ffffff; padding-top: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                <h3 style="color: #d49a11;">⭐ Mon Évaluation</h3>
+            <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <h3 style="color: #f4b41a;">⭐ Mon Évaluation</h3>
 
                 {% if monEvaluation %}
-                    <div style="background: #2a6df4; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #81b6da;">
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid rgba(255, 255, 255, 0.3);">
                         <p style="margin-bottom: 5px; color: white;">
                             <strong>Ma note :</strong> {{ monEvaluation.note }} / 5
                         </p>
@@ -30,13 +30,13 @@
                     <button onclick="document.getElementById('form-eval').style.display='block'" style="background-color: #f4b41a; color: #1e2a3a; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 15px;">Évaluer cette entreprise</button>
                 {% endif %}
 
-                <form id="form-eval" action="/entreprise/evaluer" method="POST" style="display: none; margin-top: 20px; background: #eef2f9; padding: 20px; border-radius: 8px; text-align: left;">
+                <form id="form-eval" action="/entreprise/evaluer" method="POST" style="display: none; margin-top: 20px; background: white; padding: 20px; border-radius: 8px; text-align: left;">
                     <input type="hidden" name="action" value="save">
                     <input type="hidden" name="id_entreprise" value="{{ entreprise.Id_ENTREPRISE }}">
 
                     <div style="margin-bottom: 15px;">
-                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Note de confiance (sur 5) *</label>
-                        <select name="note" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; font-size: 1.1em; background: white;">
+                        <label style="font-weight: bold; display: block; margin-bottom: 5px; color: #1e2a3a;">Note de confiance (sur 5) *</label>
+                        <select name="note" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; font-size: 1.1em; background: white; color: #1e2a3a;">
                             <option value="5" {% if monEvaluation and monEvaluation.note == 5 %} selected {% endif %}>⭐⭐⭐⭐⭐ (5/5) - Excellente</option>
                             <option value="4" {% if monEvaluation and monEvaluation.note == 4 %} selected {% endif %}>⭐⭐⭐⭐ (4/5) - Très bonne</option>
                             <option value="3" {% if monEvaluation and monEvaluation.note == 3 %} selected {% endif %}>⭐⭐⭐ (3/5) - Correcte</option>
@@ -53,34 +53,38 @@
             </div>
         {% endif %}
 
-        <div style="margin-top: 40px; border-top: 2px solid #eef2f9; padding-top: 20px; width: 100%; text-align: left;">
-            <h3 style="color: #1e2a3a; margin-bottom: 20px; text-align: center;">📊 Ce que pensent nos Pilotes/Administrateurs</h3>
+        <div style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 30px; width: 100%; text-align: center;">
+            <h3 style="color: white; margin-bottom: 20px; font-weight: 500; font-size: 1.2em;">Ce que pensent nos Pilotes / Administrateurs</h3>
 
             {% if evaluationsEntreprise is not empty %}
-    			{# 1. On extrait uniquement les notes dans un tableau #}
-    			{% set notes = evaluationsEntreprise|map(e => e.note) %}
+                {# 1. On extrait uniquement les notes dans un tableau #}
+                {% set notes = evaluationsEntreprise|map(e => e.note) %}
     
-    			{# 2. On calcule la somme et on divise par le nombre d'entrées #}
-    			{% set moyenne = notes|reduce((total, n) => total + n) / notes|length %}
+                {# 2. On calcule la somme et on divise par le nombre d'entrées #}
+                {% set moyenne = notes|reduce((total, n) => total + n) / notes|length %}
 
-    			<div style="background: white; border: 1px solid #dfe3ea; padding: 20px; border-radius: 12px; text-align: center; max-width: 200px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-        			<h3 style="margin: 0; color: #1e2a3a; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;">Moyenne</h3>
-        			<div style="font-size: 2.5em; font-weight: bold; color: #2a6df4; margin: 10px 0;">
-            			{{ moyenne|number_format(1, ',', ' ') }} <span style="font-size: 0.5em; color: #7f8c8d;">/ 5</span>
-        			</div>
-        			<div style="color: #f1c40f; font-size: 1.2em;">
-            			{# Petit bonus : affichage visuel des étoiles selon la moyenne #}
-            			{% for i in 1..5 %}
-                			{{ i <= moyenne ? '★' : '☆' }}
-            			{% endfor %}
-        			</div>
-        			<p style="margin-top: 10px; font-size: 0.8em; color: #7f8c8d;">
-            			Basée sur {{ evaluationsEntreprise|length }} avis
-        			</p>
-    			</div>
-			{% else %}
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; border: 1px dashed #ccc;">
-                    <p style="color: #888; font-style: italic; margin: 0;">Cette entreprise n'a pas encore été évaluée par l'équipe pédagogique.</p>
+                <div style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); padding: 15px 30px; border-radius: 50px; max-width: 450px; margin: 0 auto; display: flex; justify-content: center; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); color: white;">
+                    
+                    <h3 style="margin: 0; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9;">Moyenne</h3>
+                    
+                    <div style="font-size: 2em; font-weight: bold; margin: 0; color: #f4b41a; display: flex; align-items: baseline;">
+                        {{ moyenne|number_format(1, ',', ' ') }} <span style="font-size: 0.4em; opacity: 0.8; margin-left: 2px;">/ 5</span>
+                    </div>
+                    
+                    <div style="color: #f4b41a; font-size: 1.2em; letter-spacing: 2px;">
+                        {% for i in 1..5 %}
+                            {{ i <= moyenne ? '★' : '☆' }}
+                        {% endfor %}
+                    </div>
+                    
+                    <div style="font-size: 0.85em; opacity: 0.9; border-left: 1px solid rgba(255,255,255,0.4); padding-left: 15px;">
+                        {{ evaluationsEntreprise|length }} avis
+                    </div>
+                    
+                </div>
+            {% else %}
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 15px 30px; border-radius: 50px; text-align: center; border: 1px dashed rgba(255,255,255,0.4); max-width: 450px; margin: 0 auto;">
+                    <p style="color: white; font-style: italic; margin: 0; opacity: 0.8;">Cette entreprise n'a pas encore été évaluée par l'équipe pédagogique.</p>
                 </div>
             {% endif %}
         </div>
@@ -106,7 +110,7 @@
                             {% set couleur_drapeau = '#ccc' %}
                         {% endif %}
 
-                        <span class="favori-flag" data-id="{{ offre.Id_OFFRE }}" onclick="toggleFavori(this)" style="cursor: pointer; color: {{ couleur_drapeau }}; font-size: 24px; float: right; transition: 0.3s;">
+                        <span class="favori-flag" data-id="{{ offre.Id_OFFRE }}" onclick="toggleFavori(this)" style="cursor: pointer; color: {{ couleur_drapeau }}; font-size: 24px; float: right; transition: 0.3s; margin-top: -30px;">
                             ⚑
                         </span>
                     {% endif %}
