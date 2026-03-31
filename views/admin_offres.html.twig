@@ -12,9 +12,23 @@
         
         <div style="width: 100%; max-width: 600px; text-align: left;">
              <a href="/profil" style="position: relative; z-index: 9999; color: #ff6b35; text-decoration: none; font-weight: bold;">← Retour au profil</a>
-             <a href="/admin/competences">
-                 <button style="background: #1e2a3a; padding: 10px 20px; font-size: 0.9em;">🛠️ Dictionnaire des compétences</button>
-             </a>
+             <a href="/admin/competences" style="text-decoration: none;">
+                <button type="button" style="
+                    background: #3B4CC0; 
+                    color: white; 
+                    border: none; 
+                    padding: 12px 20px; 
+                    border-radius: 8px; 
+                    font-weight: 600; 
+                    cursor: pointer; 
+                    box-shadow: 0 4px 10px rgba(59, 76, 192, 0.3);
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                ">
+                    <span>🛠️ Dictionnaire des compétences</span>
+                </button>
+            </a>
              {% if message %}
                 <div style="background-color: #eef2f9; padding: 15px; border-radius: 6px; margin-top: 20px; text-align: center; font-weight: 600; color: #1e2a3a; border: 1px solid #dfe3ea;">
                     {{ message }}
