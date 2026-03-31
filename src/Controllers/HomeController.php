@@ -16,34 +16,39 @@ class HomeController
 
     public function index()
     {
-        // 1. On intercepte les mots-clés tapés dans la barre de recherche
+        // 1. On intercepte les mots-clés
         $keyword = $_GET['q'] ?? '';
         $location = $_GET['lieu'] ?? '';
+        
+        // 2. Gestion de la Pagination
+        $page = isset($_GET['p']) ? max(1, (int)$_GET['p']) : 1; // Page 1 par défaut
+        $limit = 3; // 3 offres par page maximum
+        $offset = ($page - 1) * $limit; // Calcul du décalage
 
-        // 2. S'il y a une recherche, on filtre, sinon on prend tout !
-        if (!empty($keyword) || !empty($location)) {
-            $offres = \App\Models\Offre::search($keyword, $location);
-        } else {
-            $offres = \App\Models\Offre::getAll(); 
-        }
+        // 3. On récupère les 3 offres de la page actuelle ET le nombre total
+        $offres = \App\Models\Offre::getPaginated($keyword, $location, $limit, $offset);
+        $totalOffres = \App\Models\Offre::countPaginated($keyword, $location);
+        $totalPages = ceil($totalOffres / $limit); // Arrondi au supérieur (ex: 7 offres = 3 pages)
 
-        // 3. Gestion des favoris pour l'affichage des drapeaux bleus
+        // 4. Gestion des favoris
         $mesFavorisIds = [];
         if (isset($_SESSION['user']) && $_SESSION['user']['role'] == 1) {
             $offresFavorites = \App\Models\Favori::getUserFavorites($_SESSION['user']['id']);
             $mesFavorisIds = array_column($offresFavorites, 'Id_OFFRE');
         }
 
-        // 4. On récupère les statistiques en temps réel
+        // 5. Statistiques
         $stats = \App\Models\Stats::getDashboardStats();
 
-        // 5. On envoie tout à la vue (en gardant bien 'accueil.html.twig')
+        // 6. On envoie tout à la vue !
         echo $this->twig->render('accueil.html.twig', [
             'offres' => $offres,
             'mesFavorisIds' => $mesFavorisIds,
             'stats' => $stats,
-            'search_q' => $keyword,      // On renvoie le mot-clé pour ne pas vider la barre
-            'search_lieu' => $location   // On renvoie le lieu
+            'search_q' => $keyword,
+            'search_lieu' => $location,
+            'currentPage' => $page,
+            'totalPages' => $totalPages // On envoie le nombre de pages à Twig
         ]);
     }
 }

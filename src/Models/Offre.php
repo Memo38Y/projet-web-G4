@@ -152,4 +152,60 @@ class Offre
         $stmt->execute($params);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Récupère les offres avec pagination (et gère la recherche en même temps !)
+     */
+    public static function getPaginated($keyword = '', $location = '', $limit = 3, $offset = 0) 
+    {
+        $db = \App\Core\Database::getInstance();
+        $sql = "SELECT OFFRE.*, ENTREPRISE.nom AS nom_entreprise 
+                FROM OFFRE 
+                JOIN ENTREPRISE ON OFFRE.Id_ENTREPRISE = ENTREPRISE.Id_ENTREPRISE 
+                WHERE 1=1";
+        
+        $params = [];
+
+        if (!empty($keyword)) {
+            $sql .= " AND (OFFRE.titre LIKE ? OR OFFRE.description LIKE ? OR ENTREPRISE.nom LIKE ?)";
+            $params[] = "%$keyword%"; $params[] = "%$keyword%"; $params[] = "%$keyword%";
+        }
+        if (!empty($location)) {
+            $sql .= " AND OFFRE.lieu LIKE ?";
+            $params[] = "%$location%";
+        }
+
+        // On trie par les plus récentes et on limite les résultats
+        $sql .= " ORDER BY OFFRE.Id_OFFRE DESC LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Compte le nombre total d'offres pour générer les numéros de page
+     */
+    public static function countPaginated($keyword = '', $location = '') 
+    {
+        $db = \App\Core\Database::getInstance();
+        $sql = "SELECT COUNT(*) FROM OFFRE 
+                JOIN ENTREPRISE ON OFFRE.Id_ENTREPRISE = ENTREPRISE.Id_ENTREPRISE 
+                WHERE 1=1";
+        
+        $params = [];
+
+        if (!empty($keyword)) {
+            $sql .= " AND (OFFRE.titre LIKE ? OR OFFRE.description LIKE ? OR ENTREPRISE.nom LIKE ?)";
+            $params[] = "%$keyword%"; $params[] = "%$keyword%"; $params[] = "%$keyword%";
+        }
+        if (!empty($location)) {
+            $sql .= " AND OFFRE.lieu LIKE ?";
+            $params[] = "%$location%";
+        }
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn(); // Renvoie juste le nombre
+    }
 }

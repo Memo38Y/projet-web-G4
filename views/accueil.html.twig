@@ -159,5 +159,32 @@
                 </a>
             </div>
         {% endfor %}
+
+        {% if totalPages > 1 %}
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 50px; flex-wrap: wrap;">
+                
+                {% if currentPage > 1 %}
+                    <a href="/?q={{ search_q }}&lieu={{ search_lieu }}&p={{ currentPage - 1 }}" style="position: relative; z-index: 9999;padding: 10px 15px; border-radius: 6px; text-decoration: none; background: #eef2f9; color: #1e2a3a; font-weight: bold; transition: 0.2s;">
+                        &laquo; Précédent
+                    </a>
+                {% endif %}
+
+                {% for p in 1..totalPages %}
+                    <a href="/?q={{ search_q }}&lieu={{ search_lieu }}&p={{ p }}" 
+                       style="position: relative; z-index: 9999; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; transition: 0.2s;
+                              background: {{ p == currentPage ? '#2a6df4' : '#eef2f9' }}; 
+                              color: {{ p == currentPage ? 'white' : '#1e2a3a' }};">
+                        {{ p }}
+                    </a>
+                {% endfor %}
+
+                {% if currentPage < totalPages %}
+                    <a href="/?q={{ search_q }}&lieu={{ search_lieu }}&p={{ currentPage + 1 }}" style="position: relative; z-index: 9999; padding: 10px 15px; border-radius: 6px; text-decoration: none; background: #eef2f9; color: #1e2a3a; font-weight: bold; transition: 0.2s;">
+                        Suivant &raquo;
+                    </a>
+                {% endif %}
+                
+            </div>
+        {% endif %}
     </section>
 {% endblock %}
