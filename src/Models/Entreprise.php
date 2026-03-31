@@ -144,4 +144,49 @@ class Entreprise
         $req->execute([$idEntreprise]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Récupère les entreprises avec pagination et recherche
+     */
+    public static function getPaginated($keyword = '', $limit = 3, $offset = 0) 
+    {
+        $db = Database::getInstance();
+        $sql = "SELECT * FROM ENTREPRISE WHERE 1=1";
+        $params = [];
+
+        if (!empty($keyword)) {
+            $sql .= " AND (nom LIKE ? OR secteur_activite LIKE ? OR description LIKE ?)";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+        }
+
+        // On trie par ordre alphabétique et on limite les résultats
+        $sql .= " ORDER BY nom ASC LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Compte le nombre total d'entreprises pour générer les numéros de page
+     */
+    public static function countPaginated($keyword = '') 
+    {
+        $db = Database::getInstance();
+        $sql = "SELECT COUNT(*) FROM ENTREPRISE WHERE 1=1";
+        $params = [];
+
+        if (!empty($keyword)) {
+            $sql .= " AND (nom LIKE ? OR secteur_activite LIKE ? OR description LIKE ?)";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+        }
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn();
+    }
 }

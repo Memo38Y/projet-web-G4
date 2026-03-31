@@ -15,12 +15,25 @@ class EntrepriseController
 
     public function index()
     {
-        // On récupère la liste des entreprises depuis MariaDB
-        $entreprises = Entreprise::getAll();
+        // 1. On intercepte la recherche
+        $keyword = $_GET['q'] ?? '';
+        
+        // 2. Gestion de la Pagination
+        $page = isset($_GET['p']) ? max(1, (int)$_GET['p']) : 1;
+        $limit = 4; // On affiche 4 entreprises maximum par page
+        $offset = ($page - 1) * $limit;
 
-        // On envoie ces données à la vue Twig
+        // 3. On récupère les entreprises de la page actuelle ET le total
+        $entreprises = \App\Models\Entreprise::getPaginated($keyword, $limit, $offset);
+        $totalEntreprises = \App\Models\Entreprise::countPaginated($keyword);
+        $totalPages = ceil($totalEntreprises / $limit);
+
+        // 4. On envoie les données à la vue Twig
         echo $this->twig->render('entreprise.html.twig', [
-            'entreprises' => $entreprises
+            'entreprises' => $entreprises,
+            'search_q' => $keyword,
+            'currentPage' => $page,
+            'totalPages' => $totalPages
         ]);
     }
 
