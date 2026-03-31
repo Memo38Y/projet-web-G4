@@ -98,6 +98,7 @@ background:radial-gradient(circle, rgba(255,255,255,0.2), transparent);
 top:-200px;
 left:-200px;
 filter:blur(80px);
+pointer-events: none;
 }
 
 .hero h1{
