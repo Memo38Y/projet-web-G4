@@ -115,4 +115,41 @@ class Offre
         $req = $db->prepare("DELETE FROM OFFRE WHERE Id_OFFRE = ?");
         return $req->execute([$id]);
     }
+
+    /**
+     * Recherche des offres par mots-clés et/ou par lieu
+     */
+    public static function search($keyword = '', $location = '') 
+    {
+        $db = \App\Core\Database::getInstance();
+        
+        // On prépare la base de la requête
+        $sql = "SELECT OFFRE.*, ENTREPRISE.nom AS nom_entreprise 
+                FROM OFFRE 
+                JOIN ENTREPRISE ON OFFRE.Id_ENTREPRISE = ENTREPRISE.Id_ENTREPRISE 
+                WHERE 1=1"; // Le WHERE 1=1 permet d'ajouter des "AND" facilement ensuite
+        
+        $params = [];
+
+        // Si l'utilisateur a tapé un mot-clé (métier, entreprise...)
+        if (!empty($keyword)) {
+            $sql .= " AND (OFFRE.titre LIKE ? OR OFFRE.description LIKE ? OR ENTREPRISE.nom LIKE ?)";
+            // On met des % pour dire "qui contient ce mot"
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+        }
+
+        // Si l'utilisateur a tapé un lieu
+        if (!empty($location)) {
+            $sql .= " AND OFFRE.lieu LIKE ?";
+            $params[] = "%$location%";
+        }
+
+        $sql .= " ORDER BY OFFRE.date_offre DESC";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }
