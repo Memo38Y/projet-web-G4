@@ -56,8 +56,15 @@ class EntrepriseController
             exit;
         }
 
-        // 3. On va chercher toutes ses offres
-        $offres = \App\Models\Offre::getByEntreprise($id);
+        // 3. NOUVEAU : Recherche et Pagination des offres de cette entreprise
+        $keyword = $_GET['q'] ?? '';
+        $page = isset($_GET['p']) ? max(1, (int)$_GET['p']) : 1;
+        $limit = 3; // 3 offres par page maximum
+        $offset = ($page - 1) * $limit;
+
+        $offres = \App\Models\Offre::getPaginatedByEntreprise($id, $keyword, $limit, $offset);
+        $totalOffres = \App\Models\Offre::countPaginatedByEntreprise($id, $keyword);
+        $totalPages = ceil($totalOffres / $limit);
 
         // 4. Gestion des favoris pour l'affichage des drapeaux bleus
         $mesFavorisIds = [];
@@ -84,7 +91,11 @@ class EntrepriseController
             'offres' => $offres,
             'mesFavorisIds' => $mesFavorisIds,
             'monEvaluation' => $monEvaluation,
-            'evaluationsEntreprise' => $evaluationsEntreprise // <-- Ne pas oublier de l'ajouter ici !
+            'evaluationsEntreprise' => $evaluationsEntreprise,
+            // Variables de pagination et recherche :
+            'search_q' => $keyword,
+            'currentPage' => $page,
+            'totalPages' => $totalPages
         ]);
     }
 

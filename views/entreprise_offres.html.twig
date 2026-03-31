@@ -57,30 +57,22 @@
             <h3 style="color: white; margin-bottom: 20px; font-weight: 500; font-size: 1.2em;">Ce que pensent nos Pilotes / Administrateurs</h3>
 
             {% if evaluationsEntreprise is not empty %}
-                {# 1. On extrait uniquement les notes dans un tableau #}
                 {% set notes = evaluationsEntreprise|map(e => e.note) %}
-    
-                {# 2. On calcule la somme et on divise par le nombre d'entrées #}
                 {% set moyenne = notes|reduce((total, n) => total + n) / notes|length %}
 
                 <div style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); padding: 15px 30px; border-radius: 50px; max-width: 450px; margin: 0 auto; display: flex; justify-content: center; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); color: white;">
-                    
                     <h3 style="margin: 0; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9;">Moyenne</h3>
-                    
                     <div style="font-size: 2em; font-weight: bold; margin: 0; color: #f4b41a; display: flex; align-items: baseline;">
                         {{ moyenne|number_format(1, ',', ' ') }} <span style="font-size: 0.4em; opacity: 0.8; margin-left: 2px;">/ 5</span>
                     </div>
-                    
                     <div style="color: #f4b41a; font-size: 1.2em; letter-spacing: 2px;">
                         {% for i in 1..5 %}
                             {{ i <= moyenne ? '★' : '☆' }}
                         {% endfor %}
                     </div>
-                    
                     <div style="font-size: 0.85em; opacity: 0.9; border-left: 1px solid rgba(255,255,255,0.4); padding-left: 15px;">
                         {{ evaluationsEntreprise|length }} avis
                     </div>
-                    
                 </div>
             {% else %}
                 <div style="background: rgba(255, 255, 255, 0.1); padding: 15px 30px; border-radius: 50px; text-align: center; border: 1px dashed rgba(255,255,255,0.4); max-width: 450px; margin: 0 auto;">
@@ -89,14 +81,26 @@
             {% endif %}
         </div>
 
-        <div class="search-box" style="margin-top: 40px;">
-            <input type="text" id="offre-search" placeholder="Rechercher une offre chez {{ entreprise.nom }}...">
-            <button>Rechercher</button>
-        </div>
+        <form action="/entreprise_offres" method="GET" class="search-box" style="margin-top: 40px;">
+            <input type="hidden" name="id" value="{{ entreprise.Id_ENTREPRISE }}">
+            <input type="text" name="q" placeholder="Rechercher une offre chez {{ entreprise.nom }}..." value="{{ search_q }}">
+            <button type="submit">Rechercher</button>
+        </form>
     </section>
 
     <section class="jobs">
         <h2>Postes actuellement ouverts</h2>
+
+        {% if search_q %}
+            <div style="text-align: center; margin-bottom: 30px; background: #fff3ed; padding: 15px; border-radius: 8px; border: 1px solid #f9eac5; display: inline-block; position: relative; left: 50%; transform: translateX(-50%);">
+                <p style="color: #d49a11; font-size: 1.1em; margin: 0 0 10px 0;">
+                    🔍 Résultats pour : <strong>"{{ search_q }}"</strong>
+                </p>
+                <a href="/entreprise_offres?id={{ entreprise.Id_ENTREPRISE }}" style="display: inline-block; color: white; background: #ff6b35; padding: 5px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.85em; transition: 0.2s;">
+                    ✖ Effacer la recherche
+                </a>
+            </div>
+        {% endif %}
 
         {% if offres is not empty %}
             {% for offre in offres %}
@@ -130,9 +134,37 @@
         {% else %}
             <div style="background: #f5f7fb; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px;">
                 <p style="color: #555; font-size: 1.1em;">
-                    <em>{{ entreprise.nom }} n'a pas encore publié d'offres de stage.</em>
+                    <em>Aucune offre ne correspond à cette recherche.</em>
                 </p>
             </div>
         {% endif %}
+
+        {% if totalPages > 1 %}
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 50px; flex-wrap: wrap;">
+                
+                {% if currentPage > 1 %}
+                    <a href="/entreprise_offres?id={{ entreprise.Id_ENTREPRISE }}&q={{ search_q }}&p={{ currentPage - 1 }}" style="padding: 10px 15px; border-radius: 6px; text-decoration: none; background: #eef2f9; color: #1e2a3a; font-weight: bold; transition: 0.2s;">
+                        &laquo; Précédent
+                    </a>
+                {% endif %}
+
+                {% for p in 1..totalPages %}
+                    <a href="/entreprise_offres?id={{ entreprise.Id_ENTREPRISE }}&q={{ search_q }}&p={{ p }}" 
+                       style="padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; transition: 0.2s;
+                              background: {{ p == currentPage ? '#2a6df4' : '#eef2f9' }}; 
+                              color: {{ p == currentPage ? 'white' : '#1e2a3a' }};">
+                        {{ p }}
+                    </a>
+                {% endfor %}
+
+                {% if currentPage < totalPages %}
+                    <a href="/entreprise_offres?id={{ entreprise.Id_ENTREPRISE }}&q={{ search_q }}&p={{ currentPage + 1 }}" style="padding: 10px 15px; border-radius: 6px; text-decoration: none; background: #eef2f9; color: #1e2a3a; font-weight: bold; transition: 0.2s;">
+                        Suivant &raquo;
+                    </a>
+                {% endif %}
+                
+            </div>
+        {% endif %}
+
     </section>
 {% endblock %}

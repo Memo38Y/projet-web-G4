@@ -208,4 +208,52 @@ class Offre
         $stmt->execute($params);
         return $stmt->fetchColumn(); // Renvoie juste le nombre
     }
+
+    /**
+     * Récupère les offres d'une entreprise spécifique avec pagination et recherche
+     */
+    public static function getPaginatedByEntreprise($idEntreprise, $keyword = '', $limit = 3, $offset = 0) 
+    {
+        $db = \App\Core\Database::getInstance();
+        $sql = "SELECT OFFRE.*, ENTREPRISE.nom AS nom_entreprise 
+                FROM OFFRE 
+                JOIN ENTREPRISE ON OFFRE.Id_ENTREPRISE = ENTREPRISE.Id_ENTREPRISE 
+                WHERE OFFRE.Id_ENTREPRISE = ?";
+        
+        $params = [$idEntreprise]; // L'ID de l'entreprise est le premier paramètre obligatoire
+
+        if (!empty($keyword)) {
+            $sql .= " AND (OFFRE.titre LIKE ? OR OFFRE.description LIKE ? OR OFFRE.lieu LIKE ?)";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+        }
+
+        $sql .= " ORDER BY OFFRE.Id_OFFRE DESC LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Compte le nombre d'offres de l'entreprise pour générer les numéros de page
+     */
+    public static function countPaginatedByEntreprise($idEntreprise, $keyword = '') 
+    {
+        $db = \App\Core\Database::getInstance();
+        $sql = "SELECT COUNT(*) FROM OFFRE WHERE Id_ENTREPRISE = ?";
+        $params = [$idEntreprise];
+
+        if (!empty($keyword)) {
+            $sql .= " AND (titre LIKE ? OR description LIKE ? OR lieu LIKE ?)";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+        }
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn();
+    }
 }
